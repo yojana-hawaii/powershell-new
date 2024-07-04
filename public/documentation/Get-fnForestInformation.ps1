@@ -7,14 +7,14 @@ function Get-fnForestInformation {
     $forest = Get-fnForest
 
     $data = [ordered]@{}
-    $data.ForestRootDse             = Get-fnForestRootDse
+    $data.RootDse                   = Get-fnRootDse
     $data.ForestUpnSuffixes         = Get-fnForestUpnSuffixes -Forest $forest
     $data.ForestSpnSuffixes         = Get-fnForestSpnSuffixes -Forest $forest
     $data.ForestGlobalCatalogs      = $forest.GlobalCatalogs
     $data.ForestFSMO                = Get-fnForestFSMO -Forest $forest
     $data.ForestSubnets             = Get-fnForestSubets
     $data.ForestSiteLinks           = Get-fnForestSiteLinks
-    $data.ForestInformation         = Get-fnForestDetails -Forest $forest -rootDSE $data.ForestRootDse
+    $data.ForestInformation         = Get-fnForestDetails -Forest $forest -rootDSE $data.RootDSE
 
 
     $data.ForestOptionalFeatures    = Get-fnForestOptionalFeatures

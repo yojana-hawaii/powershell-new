@@ -1,4 +1,4 @@
-function Get-fnForestRootDse {
+function Get-fnRootDse {
     [CmdletBinding()]
     param()
 

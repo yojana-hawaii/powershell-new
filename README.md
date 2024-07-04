@@ -1,6 +1,6 @@
 
 
-learning GPO & powershell from https://github.com/EotecIT/GPOZaurr
+learning GPO & powershell from https://github.com/EotecIT/ 
 * why public and private folder separation >
 * why one function per file
 psm1 file 
