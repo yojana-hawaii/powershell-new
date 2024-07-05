@@ -31,8 +31,9 @@ function Get-fnActiveDirectoryInformation {
     $data.DnsSrv                    = (Get-fnDnsData -domain $data.Domain).SRV    
     $data.DnsA                      = (Get-fnDnsData -domain $data.Domain).A
 
-    $data.DhcpServer                = "Get-fnDhcp + firewall + more?"
-    $data.DnsServer                 = "Get-DnsClientServerAddress needs interfaceAlias"
+    $data.DhcpServer                = Get-fnDhcpServer
+    $data.DhcpServerOther           = "+ firewall + more???"
+    $data.DnsServer                 = "Get-DnsClientServerAddress needs interfaceAlias ???"
     $data.ComputersContainer        = $domain.ComputersContainer
     $data.DeletedObjectsContainer   = $domain.DeletedObjectsContainer
     $data.DomainControllersContainer= $domain.DomainControllersContainer
@@ -56,6 +57,8 @@ function Get-fnActiveDirectoryInformation {
     $data.SiteCount                 = ($forest.Sites).Count
 
     $data.PasswordPolicy            = Get-fnPasswordPolicy 
+
+    $data.TrustedDomainObjects      = Get-fnTrustedObjects
     
 
     $totalTime = Stop-Timer -Start $startTimer

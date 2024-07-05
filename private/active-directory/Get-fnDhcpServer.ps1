@@ -1,4 +1,4 @@
-function Get-fnDhcp {
+function Get-fnDhcpServer {
     [CmdletBinding()]
     param()
     
@@ -7,8 +7,8 @@ function Get-fnDhcp {
         Write-Verbose "Getting DHCP Names"
         return @((Get-DhcpServerInDC).dnsname)
      } catch {
-         Write-Warning "Get-fnDhcp failed: $($_.Exception.Message) "
+         Write-Warning "Get-fnDhcpServer failed: $($_.Exception.Message) "
          continue
      }
 }
-# Get-fnDhcp -Verbose
+# Get-fnDhcpServer -Verbose
