@@ -1,11 +1,17 @@
 
 
 learning GPO & powershell from https://github.com/EotecIT/ 
-* why public and private folder separation >
-* why one function per file
-psm1 file 
-* initialize all functions within public & private > does that solve my problem of calling functions and config from other files and folders 
-* also calling for assembly folders. Not sure what they are?
+
+to do
+* AD computer - bitlocker,LAPS
+* password
+* gpo
+* computer details
+* OU
+* groups
+* domain admin, enterprise admin
+
+
 
 App 
 login

@@ -19,16 +19,17 @@ foreach ($import in @($public + $private + $shared)){
     
 }
 
-$VerbosePreference = "continue"
+# $VerbosePreference = "continue"
+$VerbosePreference = "silentlycontinue"
 
 
 # $conf = Get-fnConfig
 # $conf.Domain
 
 
-# documentation
-# Get-fnForestInformation -Verbose
-# Get-fnDomainInformation -Verbose
 
 # group-policy
-Get-fnGPO | Format-Table -AutoSize *
+# Get-fnGPO | Format-Table -AutoSize *
+
+# active-directory
+Get-fnActiveDirectoryInformation -Verbose
