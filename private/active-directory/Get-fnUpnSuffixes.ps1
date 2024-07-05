@@ -1,16 +1,11 @@
-function Get-fnForestUpnSuffixes {
+function Get-fnUpnSuffixes {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
         [PSCustomObject]$Forest
     )
-    
-    begin {
-        
-    }
-    
-    process {
-        @(
+    Write-Verbose "Getting UPN Suffixes"
+    return   @(
             [PSCustomObject]@{
                 Name = $Forest.RootDomain
                 Type = 'Primary/Default UPN'
@@ -22,9 +17,5 @@ function Get-fnForestUpnSuffixes {
                 }
             }
         )
-    }
-    
-    end {
-        
-    }
+
 }
