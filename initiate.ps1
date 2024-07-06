@@ -32,4 +32,4 @@ $VerbosePreference = "silentlycontinue"
 # Get-fnGPO | Format-Table -AutoSize *
 
 # active-directory
-Get-fnActiveDirectoryInformation -Verbose
+Get-fnActiveDirectory -Verbose

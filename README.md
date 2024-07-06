@@ -10,6 +10,7 @@ to do
 * OU
 * groups
 * domain admin, enterprise admin
+* adfs
 
 
 

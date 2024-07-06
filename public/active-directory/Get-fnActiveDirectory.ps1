@@ -1,4 +1,4 @@
-function Get-fnActiveDirectoryInformation {
+function Get-fnActiveDirectory {
     [CmdletBinding()]
     param()
 
@@ -34,6 +34,7 @@ function Get-fnActiveDirectoryInformation {
     $data.DhcpServer                = Get-fnDhcpServer
     $data.DhcpServerOther           = "+ firewall + more???"
     $data.DnsServer                 = "Get-DnsClientServerAddress needs interfaceAlias ???"
+    
     $data.ComputersContainer        = $domain.ComputersContainer
     $data.DeletedObjectsContainer   = $domain.DeletedObjectsContainer
     $data.DomainControllersContainer= $domain.DomainControllersContainer
@@ -45,6 +46,7 @@ function Get-fnActiveDirectoryInformation {
     $data.PartitionsContainer       = $forest.PartitionsContainer
     $data.configurationNamingContext= $rootDse.configurationNamingContext
     $data.DsServiceName             = $rootDse.dsServiceName
+    $data.WellKnownFolders          = Get-fnWellKnownFolders -domain $domain
 
     $data.OptionalFeatures          = Get-fnOptionalFeatures
     $data.Subnets                   = Get-fnSubets
@@ -58,15 +60,17 @@ function Get-fnActiveDirectoryInformation {
 
     $data.PasswordPolicy            = Get-fnPasswordPolicy 
 
-    $data.TrustedDomainObjects      = Get-fnTrustedObjects
-    
+    $data.TrustedDomainObjects          = Get-fnTrustedObjects
+    $data.DomainAthenticationPolicy     = Get-fnDomainAuthPolicy
+    $data.DomainAthenticationPolicySilo = Get-fnDomainAuthPolicySilo
+    $data.DomainCentralAccesPolicy      = Get-fnDomainCentralAccessPolicy
+    $data.DomainCentralAccessRule       = Get-fnDomainCentralAccessRule
+    $data.DomainClaimTransformPolicy    = Get-fnDomainClaimTransformPolicy
+    $data.DomainClaimType               = Get-fnDomainClaimType
 
     $totalTime = Stop-Timer -Start $startTimer
     Write-Verbose "Active Directory information gathering completed. It took $totalTime"
-
     return $data
-
-        
 
 }
 # Get-fnActiveDirectoryInformation
