@@ -9,44 +9,45 @@ function Get-fnActiveDirectory {
     $rootDse = Get-fnRootDse
 
     $data = [ordered]@{}
-    $data.Forest                    = $domain.Forest
-    $data.Domain                    = $domain.DNSRoot
-    $data.DomainFunctionality       = $rootDse.DomainFunctionality 
+    $data.Forest                        = $domain.Forest
+    $data.Domain                        = $domain.DNSRoot
+    $data.NetBiosName                   = $domain.NetBiosName
+    $data.DomainFunctionality           = $rootDse.DomainFunctionality 
     $data.DomainControllerFunctionality = $rootDse.domainControllerFunctionality
-    $data.DistinguishedName         = $domain.DistinguishedName
+    $data.DistinguishedName             = $domain.DistinguishedName
 
-    $data.DomainController          = Get-fnDomainController
-    $data.GlobalCatalog             = Get-fnGlobalCatalog
-    $data.InfrastructureMaster      = $domain.InfrastructureMaster
-    $data.SchemaMaster              = $forest.SchemaMaster
-    $data.DomainNamingMaster        = $forest.DomainNamingMaster
-    $data.PDCEmulator               = $domain.PDCEmulator
-    $data.RIDMaster                 = $domain.RIDMaster
-    $data.ReplicaDirectoryServers   = $domain.ReplicaDirectoryServers
-    $data.ReadOnlyDC                = Get-fnRodc 
-    $data.DomainControllerReplication= Get-fnDomainControllerReplication -Server $data.DomainController
+    $data.DomainController              = Get-fnDomainController
+    $data.GlobalCatalog                 = Get-fnGlobalCatalog
+    $data.InfrastructureMaster          = $domain.InfrastructureMaster
+    $data.SchemaMaster                  = $forest.SchemaMaster
+    $data.DomainNamingMaster            = $forest.DomainNamingMaster
+    $data.PDCEmulator                   = $domain.PDCEmulator
+    $data.RIDMaster                     = $domain.RIDMaster
+    $data.ReplicaDirectoryServers       = $domain.ReplicaDirectoryServers
+    $data.ReadOnlyDC                    = Get-fnRodc 
+    $data.DomainControllerReplication   = Get-fnDomainControllerReplication -Server $data.DomainController
     
 
-    $data.rIDAvailablePool          = Get-fnDomainRids -DistinguishedName $data.DistinguishedName -RidMaster $data.RIDMaster
-    $data.DnsSrv                    = (Get-fnDnsData -domain $data.Domain).SRV    
-    $data.DnsA                      = (Get-fnDnsData -domain $data.Domain).A
+    $data.rIDAvailablePool              = Get-fnDomainRids -DistinguishedName $domain.DistinguishedName -RidMaster $domain.RIDMaster
+    $data.DnsSrv                        = (Get-fnDnsData -domain $domain.DNSRoot).SRV    
+    $data.DnsA                          =   (Get-fnDnsData -domain $domain.DNSRoot).A
 
-    $data.DhcpServer                = Get-fnDhcpServer
-    $data.DhcpServerOther           = "+ firewall + more???"
-    $data.DnsServer                 = "Get-DnsClientServerAddress needs interfaceAlias ???"
+    $data.DhcpServer                    = Get-fnDhcpServer
+    $data.DhcpServerOther               = "+ firewall + more???"
+    $data.DnsServer                     = "Get-DnsClientServerAddress needs interfaceAlias ???"
     
-    $data.ComputersContainer        = $domain.ComputersContainer
-    $data.DeletedObjectsContainer   = $domain.DeletedObjectsContainer
-    $data.DomainControllersContainer= $domain.DomainControllersContainer
-    $data.ForeignSecurityPrincipalsContainer = $domain.ForeignSecurityPrincipalsContainer
-    $data.LostAndFoundContainer     = $domain.LostAndFoundContainer
-    $data.QuotasContainer           = $domain.QuotasContainer
-    $data.SystemsContainer          = $domain.SystemsContainer
-    $data.UsersContainer            = $domain.UsersContainer
-    $data.PartitionsContainer       = $forest.PartitionsContainer
-    $data.configurationNamingContext= $rootDse.configurationNamingContext
-    $data.DsServiceName             = $rootDse.dsServiceName
-    $data.WellKnownFolders          = Get-fnWellKnownFolders -domain $domain
+    $data.ComputersContainer                    = $domain.ComputersContainer
+    $data.DeletedObjectsContainer               = $domain.DeletedObjectsContainer
+    $data.DomainControllersContainer            = $domain.DomainControllersContainer
+    $data.ForeignSecurityPrincipalsContainer    = $domain.ForeignSecurityPrincipalsContainer
+    $data.LostAndFoundContainer                 = $domain.LostAndFoundContainer
+    $data.QuotasContainer                       = $domain.QuotasContainer
+    $data.SystemsContainer                      = $domain.SystemsContainer
+    $data.UsersContainer                        = $domain.UsersContainer
+    $data.PartitionsContainer                   = $forest.PartitionsContainer
+    $data.configurationNamingContext            = $rootDse.configurationNamingContext
+    $data.DsServiceName                         = $rootDse.dsServiceName
+    $data.WellKnownFolders                      = Get-fnWellKnownFolders -domain $domain
 
     $data.OptionalFeatures          = Get-fnOptionalFeatures
     $data.Subnets                   = Get-fnSubets
