@@ -13,9 +13,9 @@ create table dbo.active_directory
 	id				int identity(1,1),
 	name			varchar(100),
 	value			varchar(100),
-	created			datetime2(3) constraint df_created default (sysdatetime()),
+	created			datetime2(3) constraint df_active_directory_created default (sysdatetime()),
 	last_modified	datetime2(3),
-	constraint pk_domain primary key (id)
+	constraint pk_active_directory primary key (id)
 )
 go
 select * from dbo.active_directory
