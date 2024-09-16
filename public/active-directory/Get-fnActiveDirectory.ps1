@@ -16,26 +16,21 @@ function Get-fnActiveDirectory {
     $data.DomainControllerFunctionality = $rootDse.domainControllerFunctionality
     $data.DistinguishedName             = $domain.DistinguishedName
 
-    $data.DomainController              = Get-fnDomainController
-    $data.GlobalCatalog                 = Get-fnGlobalCatalog
+    $data.DomainController              = (Get-fnDomainController) -join ","
+    $data.GlobalCatalog                 = (Get-fnGlobalCatalog) -join ","
     $data.InfrastructureMaster          = $domain.InfrastructureMaster
     $data.SchemaMaster                  = $forest.SchemaMaster
     $data.DomainNamingMaster            = $forest.DomainNamingMaster
     $data.PDCEmulator                   = $domain.PDCEmulator
     $data.RIDMaster                     = $domain.RIDMaster
-    $data.ReplicaDirectoryServers       = $domain.ReplicaDirectoryServers
+    $data.ReplicaDirectoryServers       = ($domain.ReplicaDirectoryServers) -join ","
     $data.ReadOnlyDC                    = Get-fnRodc 
-    $data.DomainControllerReplication   = Get-fnDomainControllerReplication -Server $data.DomainController
-    
-
+    $data.DomainControllerReplication   = Get-fnDomainControllerReplication -Server (Get-fnDomainController).DomainController
     $data.rIDAvailablePool              = Get-fnDomainRids -DistinguishedName $domain.DistinguishedName -RidMaster $domain.RIDMaster
-    $data.DnsSrv                        = (Get-fnDnsData -domain $domain.DNSRoot).SRV    
-    $data.DnsA                          =   (Get-fnDnsData -domain $domain.DNSRoot).A
-
-    $data.DhcpServer                    = Get-fnDhcpServer
-    $data.DhcpServerOther               = "+ firewall + more???"
-    $data.DnsServer                     = "Get-DnsClientServerAddress needs interfaceAlias ???"
     
+    $data.DhcpServer                    = (Get-fnDhcpServer) -join ","
+    $data.DhcpServerOther               = "+ firewall + more???"
+
     $data.ComputersContainer                    = $domain.ComputersContainer
     $data.DeletedObjectsContainer               = $domain.DeletedObjectsContainer
     $data.DomainControllersContainer            = $domain.DomainControllersContainer
@@ -47,31 +42,42 @@ function Get-fnActiveDirectory {
     $data.PartitionsContainer                   = $forest.PartitionsContainer
     $data.configurationNamingContext            = $rootDse.configurationNamingContext
     $data.DsServiceName                         = $rootDse.dsServiceName
-    $data.WellKnownFolders                      = Get-fnWellKnownFolders -domain $domain
-
-    $data.OptionalFeatures          = Get-fnOptionalFeatures
-    $data.Subnets                   = Get-fnSubets
-    $data.UpnSuffixes               = Get-fnUpnSuffixes -Forest $forest
+    $data.OptionalFeatures                      = (Get-fnOptionalFeatures) -join ","
     $data.SpnSuffixes               = Get-fnSpnSuffixes -Forest $forest
-    $data.ReplicationSiteLinks      = Get-fnReplicationSiteLinks
+
+    $data.DomainCount                           = ($forest.Domains).Count
+    $data.SiteCount                             = ($forest.Sites).Count
     
-    $data.Sites                     = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest().Sites
-    $data.DomainCount               = ($forest.Domains).Count
-    $data.SiteCount                 = ($forest.Sites).Count
-
-    $data.PasswordPolicy            = Get-fnPasswordPolicy 
-
+    
     $data.TrustedDomainObjects          = Get-fnTrustedObjects
     $data.DomainAthenticationPolicy     = Get-fnDomainAuthPolicy
     $data.DomainAthenticationPolicySilo = Get-fnDomainAuthPolicySilo
     $data.DomainCentralAccesPolicy      = Get-fnDomainCentralAccessPolicy
     $data.DomainCentralAccessRule       = Get-fnDomainCentralAccessRule
     $data.DomainClaimTransformPolicy    = Get-fnDomainClaimTransformPolicy
+
+    <# Objects not in stored in database right now. Need to think how to save them. possible option
+    1. loop through them flatten it and stored in one row
+    2. multiple rows
+    3. separate table
+    #>
+    
     $data.DomainClaimType               = Get-fnDomainClaimType
+    
+    $data.Subnets                   = Get-fnSubets
+    $data.UpnSuffixes               = Get-fnUpnSuffixes -Forest $forest
+    $data.ReplicationSiteLinks      = Get-fnReplicationSiteLinks
+    
+    $data.Sites                     = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest().Sites
+    $data.PasswordPolicy            = Get-fnPasswordPolicy 
+    
+    $data.DnsSrv                        = (Get-fnDnsData -domain $domain.DNSRoot).SRV    
+    $data.DnsA                          = (Get-fnDnsData -domain $domain.DNSRoot).A
+
 
     $totalTime = Stop-Timer -Start $startTimer
     Write-Verbose "Active Directory information gathering completed. It took $totalTime"
+    
     return $data
-
 }
-# Get-fnActiveDirectoryInformation
+# Get-fnActiveDirectory

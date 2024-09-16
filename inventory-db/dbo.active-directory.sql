@@ -1,0 +1,37 @@
+use inventory
+go
+set ansi_nulls on
+go
+set quoted_identifier on
+go
+
+
+drop table if exists dbo.active_directory;
+go
+create table dbo.active_directory 
+(
+	id				int identity(1,1),
+	name			varchar(100),
+	value			varchar(100),
+	created			datetime2(3) constraint df_created default (sysdatetime()),
+	last_modified	datetime2(3),
+	constraint pk_domain primary key (id)
+)
+go
+select * from dbo.active_directory
+/*testing last_modified -> directory to table
+insert into dbo.active_directory (name, value, last_modified)
+values ('a','b', sysdatetime())
+
+go
+
+select * from dbo.active_directory
+go
+update dbo.active_directory
+set value = 'c', last_modified = SYSDATETIME()
+where name = 'a'
+go
+
+select * from dbo.active_directory
+*/
+go
