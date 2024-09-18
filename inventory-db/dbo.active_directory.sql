@@ -18,7 +18,10 @@ create table dbo.active_directory
 	constraint pk_active_directory primary key (id)
 )
 go
-select * from dbo.active_directory
+
+select * from inventory.dbo.active_directory
+go
+
 /*testing last_modified -> directory to table
 insert into dbo.active_directory (name, value, last_modified)
 values ('a','b', sysdatetime())

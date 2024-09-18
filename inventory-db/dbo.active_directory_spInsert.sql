@@ -5,7 +5,6 @@ drop proc if exists dbo.active_directory_spInsert;
 go
 create proc dbo.active_directory_spInsert 
 (
-	@id				int = null,
 	@name			varchar(100),
 	@value			varchar(100) = null,
 	@last_modified	datetime2 = null
@@ -20,10 +19,10 @@ begin
 	end;
 
 
-	with [source](id, name, value) as
-	(
-		select @id, @name, @value
-	)
+	with [source](name, value) as
+		(
+			select @name, @value
+		)
 	merge dbo.active_directory with (holdlock) as [target]
 		using [source] on [target].name = [source].name
 	when matched and [target].value <> [source].value
