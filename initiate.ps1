@@ -1,14 +1,16 @@
 # import only specific functions in the future -> only users if I am working on users
 
-$public     = @(Get-ChildItem -Path "$PWD\public\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
-$private    = @(Get-ChildItem -Path "$PWD\private\*.ps1"    -ErrorAction SilentlyContinue -Recurse)
-$shared     = @(Get-ChildItem -Path "$PWD\shared\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
+$public             = @(Get-ChildItem -Path "$PWD\public\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
+$private            = @(Get-ChildItem -Path "$PWD\private\*.ps1"    -ErrorAction SilentlyContinue -Recurse)
+$shared             = @(Get-ChildItem -Path "$PWD\shared\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
+$config             = @(Get-ChildItem -Path "$PWD\config-helper\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
+$StoredProcedure    = @(Get-ChildItem -Path "$PWD\stored-procedure\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
 
 
 
-Write-Verbose "Read public, private and shared functions"
+Write-Verbose "Read public, private & shared functions, stored procedures and config helpers"
 #import all function
-foreach ($import in @($public + $private + $shared)){
+foreach ($import in @($public + $private + $shared + $StoredProcedure + $config)){
     try{
         . $import.Fullname
         Write-Verbose "importing $($import.Fullname)" #-Verbose
@@ -22,17 +24,19 @@ foreach ($import in @($public + $private + $shared)){
 # $VerbosePreference = "continue"
 $VerbosePreference = "silentlycontinue"
 
-
+<# using config file #>
 # $conf = Get-fnConfig
 # $conf.Domain
+# $email = Get-fnEmailConfig
+# $email.helpdesk
 
 
+<# active-directory #>
+Add-fnActiveDirectory -Verbose
 
-# group-policy
+<# organizational-unit and acl#>
+Add-fnOrganizationalUnit -verbose
+
+<# group-policy #>
 # Get-fnGPO | Format-Table -AutoSize *
 
-# active-directory
-# Get-fnActiveDirectory -Verbose
-# $o = Get-fnOrganizationalUnit -verbose
-# $o
-(Get-fnOrganizationalUnit).ExtendedAcl[1]

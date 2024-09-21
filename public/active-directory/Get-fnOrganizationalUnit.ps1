@@ -3,16 +3,17 @@ function Get-fnOrganizationalUnit {
     [CmdletBinding()]
     param()
 
-    $cnt = 0
     try{
         $NetBiosName = (Get-fnDomain).NetBiosName
-        $ouDetails = [ordered]@{}
+        $ouList = New-Object System.Collections.Generic.List[System.Object]
+        
         $OUs = Get-ADOrganizationalUnit -Filter * -Properties * 
         foreach($ou in $OUs){
-            Write-Verbose "Working on $($ou)"
+            Write-Verbose "Working on $($ou.CanonicalName)"
             
             $acl = Get-fnOrganizationalUnitAcl -DistinguishedName $ou.DistinguishedName -NetBiosName $NetBiosName
-    
+            
+            $ouDetails = [ordered]@{}
             $ouDetails.CanonicalName                    = $ou.CanonicalName
             $ouDetails.ProtectedFromAccidentalDeletion  = $ou.ProtectedFromAccidentalDeletion
             $ouDetails.Description                      = $ou.Description
@@ -31,18 +32,12 @@ function Get-fnOrganizationalUnit {
             $ouDetails.ExtendedAcl                      = $acl.Extended
             $ouDetails.ExtendedAclCount                 = $acl.ExtendedCount
             
-            if($cnt -eq 3){
-                break
-            }
-            $cnt++
+            $ouList.Add( $ouDetails)
         }
-        
     
-        return $ouDetails
+        return $ouList
     } catch {
         Write-Error "Failed getting Get-fnOrganizationalUnit: $($_.Exception.Message)"
     }
     
 }
-
-# (Get-fnOrganizationalUnit)#.ExtendedAcl[1]
