@@ -12,7 +12,7 @@ function Get-fnRaveConfig {
     return $conf
 }
 
-function Set-fnLatestEmployeeRoster {
+function Send-fnLatestEmployeeRoster {
     [CmdletBinding()]
     param()
 
@@ -48,4 +48,4 @@ function Set-fnLatestEmployeeRoster {
 }
 
 
-Set-fnLatestEmployeeRoster -Verbose
+Send-fnLatestEmployeeRoster -Verbose
