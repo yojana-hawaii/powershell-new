@@ -2,3 +2,4 @@ config/config.conf
 config/email-config.conf
 inventory-db/inventory-db.ssmssqlproj
 config/vmware.conf
+config/standalone.conf

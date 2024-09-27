@@ -2,7 +2,7 @@ function Get-fnRaveConfig {
     [CmdletBinding()]
     param()
 
-    $global = Get-Content "$PWD\config\rave.conf"
+    $global = Get-Content "$PWD\config\standalone.conf"
     $conf = @()
 
     $global | ForEach-Object {
@@ -21,10 +21,10 @@ function Send-fnLatestEmployeeRoster {
     $rave = Get-fnRaveConfig
 
     <# Strip " (double quote). Pull path from config file adds double quotes everywhere #>
-    $username = ($rave.username) -replace '"', ""
-    $password = ($rave.password) -replace '"', ""
+    $username = ($rave.rave_username) -replace '"', ""
+    $password = ($rave.rave_password) -replace '"', ""
     $sourceFile = (Join-Path -Path $rave.sourceFilepath -ChildPath $rave.sourceFilename) -replace '"',""
-    $destinationUrl = ($rave.destinationUrl) -replace '"', ""
+    $destinationUrl = ($rave.rave_destinationurl) -replace '"', ""
 
 
     $webCredential = New-Object System.Net.NetworkCredential($username, $password)
