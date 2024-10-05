@@ -5,6 +5,6 @@ config/vmware.conf
 config/standalone.conf
 private/organization-specific/Convert-fnDepartmentMapping.ps1
 private/organization-specific/Convert-fnAllOrgGroup.ps1
-private/organization-specific/Convert-fnLastnameCommaFirstnameToEmailMapping.ps1
 private/organization-specific/Convert-fnLocationMapping.ps1
 private/organization-specific/Convert-fnOrganizationMapping.ps1
+private/organization-specific/Convert-fnOrg2ConvertToEmail.ps1
