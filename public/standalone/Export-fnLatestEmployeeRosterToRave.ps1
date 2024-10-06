@@ -12,7 +12,7 @@ function Get-fnRaveConfig {
     return $conf
 }
 
-function Send-fnLatestEmployeeRoster {
+function Export-fnLatestEmployeeRosterToRave {
     [CmdletBinding()]
     param()
 
@@ -48,4 +48,4 @@ function Send-fnLatestEmployeeRoster {
 }
 
 
-Send-fnLatestEmployeeRoster -Verbose
+# Export-fnLatestEmployeeRosterToRave -Verbose
