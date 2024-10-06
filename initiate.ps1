@@ -32,11 +32,15 @@ $VerbosePreference = "silentlycontinue"
 
 
 <# active-directory #>
-Add-fnActiveDirectory -Verbose
+# Add-fnActiveDirectory -Verbose
 
 <# organizational-unit and acl#>
-Add-fnOrganizationalUnit -verbose
+# Add-fnOrganizationalUnit -verbose
+
+<# Export employee roster #>
+# Export-fnEmployeeToDialMy -Verbose
+# Export-fnLatestEmployeeRosterToRave -Verbose
 
 <# group-policy #>
-# Get-fnGPO | Format-Table -AutoSize *
-
+Get-fnGPOMetaData #| Format-Table -AutoSize *
+# Get-fnGpoContent
