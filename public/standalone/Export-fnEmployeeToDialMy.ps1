@@ -39,8 +39,9 @@ function Export-fnEmployeeToDialMy {
     $azureDirectoryCsv   = (Join-Path -Path $config.filepath -ChildPath $config.azureDirectoryCsv) -replace '"',""
     $validateCsv         = (Join-Path -Path $config.filepath -ChildPath $config.validateCsv) -replace '"',""
     $org2                = ($config.organization2) -replace '"',""
-   
-    $employees = Convert-fnCsvToEmployee -sourceFile $sourceFile -org2 $org2
+    $sourceFileHeader    = ($config.sourceFileHeader) -replace '"',""
+    
+    $employees = Convert-fnCsvToEmployee -sourceFile $sourceFile -org2 $org2 -sourceFileHeader $sourceFileHeader
     
     $employees | Select-Object Last,First,cellPhone,dialGroup | Export-csv -Path $dialMyCsv -NoTypeInformation
     $employees | Select-Object Last,First,staffEmail,managerEmail,location,department,jobtitle,orgGroup | Export-csv -Path $validateCsv -NoTypeInformation

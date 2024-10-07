@@ -6,12 +6,14 @@ function Convert-fnCsvToEmployee{
         [Parameter()]
         [string]$sourceFile,
         [Parameter()]
-        [string]$org2
+        [string]$org2,
+        [Parameter()]
+        [string]$sourceFileHeader
     )
 
     <# convert string to string[]. For some reason only works if variable is different name #>
-    $csvHeader0 = ($dialMy.sourceFileHeader) -replace '"', ""
-    $csvHeader = $csvHeader0 -split ","
+    # $csvHeader0 = ($dialMy.sourceFileHeader) -replace '"', ""
+    $csvHeader = $sourceFileHeader -split ","
 
     $employees = Read-fnCsvAddCustomHeader -csvFile $sourceFile -csvHeader $csvHeader
 
