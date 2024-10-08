@@ -14,7 +14,7 @@ function Read-fnCsvAddCustomHeader {
         try {
             $employees = Import-Csv -Path $csvFile  -Header $csvHeader  -Delimiter "," |
                             Where-Object { $_.PSObject.Properties.Value -ne '' } |
-                            Select-Object first, last, email, cellPhone, manager,location, department, jobtitle,staffEmail,managerEmail,orgGroup,dialGroup
+                            Select-Object first, last, hrEmail, cellPhone, manager,location, department, jobtitle,staffEmail,managerEmail,orgGroup,dialGroup
             }
             catch {
                 Write-Warning "Import CSV file failed: $($_.Exception.Message)"
