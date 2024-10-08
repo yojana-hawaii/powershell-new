@@ -1,17 +1,6 @@
-# import config necessary   
-function Get-fnDialMyConfig {
-    [CmdletBinding()]
-    param()
 
-    $global = Get-Content "$PWD\config\standalone.conf"
-    $conf = @()
-
-    $global | ForEach-Object {
-        $keys = $_ -split "="
-        $conf += @{$keys[0]=$keys[1]}
-    }
-    return $conf
-}
+# import config file
+. "$PWD\config-helper\Get-FnStandaloneConfig.ps1"
 
 # import private standalone functions
 $standalone = @(Get-ChildItem -Path "$PWD\private\standalone\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
@@ -32,7 +21,7 @@ function Export-fnEmployeeToDialMy {
     param()
     <# Get data from config file. Strip " (double quote). Pulling path from config file adds double quotes everywhere #>
    
-    $config              = Get-fnDialMyConfig
+    $config              = Get-fnStandaloneConfig
     $sourceFile          = (Join-Path -Path $config.filepath -ChildPath $config.sourceFilename) -replace '"',""
     $dialMyCsv           = (Join-Path -Path $config.filepath -ChildPath $config.dialMyCsv) -replace '"',""
     $activeDirectoryCsv  = (Join-Path -Path $config.filepath -ChildPath $config.activeDirectoryCsv) -replace '"',""
