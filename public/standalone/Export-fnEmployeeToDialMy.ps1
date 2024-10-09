@@ -21,17 +21,19 @@ function Export-fnEmployeeToDialMy {
     param()
     <# Get data from config file. Strip " (double quote). Pulling path from config file adds double quotes everywhere #>
    
-    $config              = Get-fnStandaloneConfig
-    $sourceFile          = (Join-Path -Path $config.filepath -ChildPath $config.sourceFilename) -replace '"',""
-    $dialMyCsv           = (Join-Path -Path $config.filepath -ChildPath $config.dialMyCsv) -replace '"',""
-    $activeDirectoryCsv  = (Join-Path -Path $config.filepath -ChildPath $config.activeDirectoryCsv) -replace '"',""
-    $azureDirectoryCsv   = (Join-Path -Path $config.filepath -ChildPath $config.azureDirectoryCsv) -replace '"',""
-    $validateCsv         = (Join-Path -Path $config.filepath -ChildPath $config.validateCsv) -replace '"',""
-    $org2                = ($config.organization2) -replace '"',""
-    $sourceFileHeader    = ($config.sourceFileHeader) -replace '"',""
+    $config                         = Get-fnStandaloneConfig
+    $sourceFile                     = (Join-Path -Path $config.filepath -ChildPath $config.sourceFilename) -replace '"',""
+    $additionalPhoneNumbersFile     = (Join-Path -Path $config.filepath -ChildPath $config.additionalPhoneNumbers) -replace '"',""
+    $dialMyCsv                      = (Join-Path -Path $config.filepath -ChildPath $config.dialMyCsv) -replace '"',""
+    $activeDirectoryCsv             = (Join-Path -Path $config.filepath -ChildPath $config.activeDirectoryCsv) -replace '"',""
+    $azureDirectoryCsv              = (Join-Path -Path $config.filepath -ChildPath $config.azureDirectoryCsv) -replace '"',""
+    $validateCsv                    = (Join-Path -Path $config.filepath -ChildPath $config.validateCsv) -replace '"',""
+    $org2                           = ($config.organization2) -replace '"',""
+    $sourceFileHeader               = ($config.sourceFileHeader) -replace '"',""
     
     $employees = Convert-fnCsvToEmployee -sourceFile $sourceFile -org2 $org2 -sourceFileHeader $sourceFileHeader
-    
+    $employees = Add-fnMissingNumbers -employees $employees -additionalPhoneNumbersFile $additionalPhoneNumbersFile
+
     $employees | Select-Object Last,First,cellPhone,dialGroup | Export-csv -Path $dialMyCsv -NoTypeInformation
     $employees | Select-Object Last,First,hrEmail,cellPhone,staffEmail,manager,managerEmail,location,department,jobtitle,orgGroup | Export-csv -Path $validateCsv -NoTypeInformation
     $employees | Where-Object {$_.department -ne $org2} | Select-Object Last,First,staffEmail,manager,managerEmail,location,department,jobtitle | Export-csv -Path $activeDirectoryCsv -NoTypeInformation
