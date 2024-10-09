@@ -1,4 +1,4 @@
-function Add-fnMissingNumbers {
+function Add-fnMissingPhoneNumbers {
     [CmdletBinding()]
     param(
         [Parameter()]

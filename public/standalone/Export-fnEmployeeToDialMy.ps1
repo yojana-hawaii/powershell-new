@@ -32,7 +32,7 @@ function Export-fnEmployeeToDialMy {
     $sourceFileHeader               = ($config.sourceFileHeader) -replace '"',""
     
     $employees = Convert-fnCsvToEmployee -sourceFile $sourceFile -org2 $org2 -sourceFileHeader $sourceFileHeader
-    $employees = Add-fnMissingNumbers -employees $employees -additionalPhoneNumbersFile $additionalPhoneNumbersFile
+    $employees = Add-fnMissingPhoneNumbers -employees $employees -additionalPhoneNumbersFile $additionalPhoneNumbersFile
 
     $employees | Select-Object Last,First,cellPhone,dialGroup | Export-csv -Path $dialMyCsv -NoTypeInformation
     $employees | Select-Object Last,First,hrEmail,cellPhone,staffEmail,manager,managerEmail,location,department,jobtitle,orgGroup | Export-csv -Path $validateCsv -NoTypeInformation
