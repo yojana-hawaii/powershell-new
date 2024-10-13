@@ -22,12 +22,12 @@ function Export-fnEmployeeToDialMy {
     <# Get data from config file. Strip " (double quote). Pulling path from config file adds double quotes everywhere #>
    
     $config                         = Get-fnStandaloneConfig
-    $sourceFile                     = (Join-Path -Path $config.filepath -ChildPath $config.sourceFilename) -replace '"',""
-    $additionalPhoneNumbersFile     = (Join-Path -Path $config.filepath -ChildPath $config.additionalPhoneNumbers) -replace '"',""
-    $dialMyCsv                      = (Join-Path -Path $config.filepath -ChildPath $config.dialMyCsv) -replace '"',""
-    $activeDirectoryCsv             = (Join-Path -Path $config.filepath -ChildPath $config.activeDirectoryCsv) -replace '"',""
-    $azureDirectoryCsv              = (Join-Path -Path $config.filepath -ChildPath $config.azureDirectoryCsv) -replace '"',""
-    $validateCsv                    = (Join-Path -Path $config.filepath -ChildPath $config.validateCsv) -replace '"',""
+    $sourceFile                     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.employeeSourceFilename) -replace '"',""
+    $additionalPhoneNumbersFile     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.additionalPhoneNumbers) -replace '"',""
+    $dialMyCsv                      = (Join-Path -Path $config.employeeFilepath -ChildPath $config.dialMyCsv) -replace '"',""
+    $activeDirectoryCsv             = (Join-Path -Path $config.employeeFilepath -ChildPath $config.activeDirectoryCsv) -replace '"',""
+    $azureDirectoryCsv              = (Join-Path -Path $config.employeeFilepath -ChildPath $config.azureDirectoryCsv) -replace '"',""
+    $validateCsv                    = (Join-Path -Path $config.employeeFilepath -ChildPath $config.validateCsv) -replace '"',""
     $org2                           = ($config.organization2) -replace '"',""
     $sourceFileHeader               = ($config.sourceFileHeader) -replace '"',""
     
