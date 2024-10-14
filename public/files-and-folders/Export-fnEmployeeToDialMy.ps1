@@ -1,27 +1,9 @@
-
-# import config file
-. "$PWD\config-helper\Get-FnStandaloneConfig.ps1"
-
-# import private standalone functions
-$standalone = @(Get-ChildItem -Path "$PWD\private\standalone\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
-$org        = @(Get-ChildItem -Path "$PWD\private\organization-specific\*.ps1"     -ErrorAction SilentlyContinue -Recurse)
-foreach ($import in @($standalone + $org)){
-    try{
-        . $import.Fullname
-        Write-Verbose "importing $($import.Fullname)" 
-    } catch {
-        Write-Error -Message "Failed to import functions from $($import.Fullname): $_"
-        $true
-    }
-    
-}
-
 function Export-fnEmployeeToDialMy {
     [CmdletBinding()]
     param()
     <# Get data from config file. Strip " (double quote). Pulling path from config file adds double quotes everywhere #>
    
-    $config                         = Get-fnStandaloneConfig
+    $config                         = Get-fnFiesAndFoldersConfig
     $sourceFile                     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.employeeSourceFilename) -replace '"',""
     $additionalPhoneNumbersFile     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.additionalPhoneNumbers) -replace '"',""
     $dialMyCsv                      = (Join-Path -Path $config.employeeFilepath -ChildPath $config.dialMyCsv) -replace '"',""

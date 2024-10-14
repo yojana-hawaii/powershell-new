@@ -1,8 +1,8 @@
-function Get-fnStandaloneConfig {
+function Get-fnFiesAndFoldersConfig {
     [CmdletBinding()]
     param()
 
-    $global = Get-Content "$PWD\config\standalone.conf"
+    $global = Get-Content "$PWD\config\files-and-folders.conf"
     $conf = @()
 
     $global | ForEach-Object {

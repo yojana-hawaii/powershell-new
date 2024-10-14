@@ -1,29 +1,15 @@
-function Get-fnRaveConfig {
-    [CmdletBinding()]
-    param()
-
-    $global = Get-Content "$PWD\config\standalone.conf"
-    $conf = @()
-
-    $global | ForEach-Object {
-        $keys = $_ -split "="
-        $conf += @{$keys[0]=$keys[1]}
-    }
-    return $conf
-}
-
 function Export-fnLatestEmployeeRosterToRave {
     [CmdletBinding()]
     param()
 
     <# Get data from rave config file #>
     Write-Verbose "Get config variables."
-    $rave = Get-fnRaveConfig
+    $rave = Get-fnFiesAndFoldersConfig
 
     <# Strip " (double quote). Pull path from config file adds double quotes everywhere #>
     $username = ($rave.rave_username) -replace '"', ""
     $password = ($rave.rave_password) -replace '"', ""
-    $sourceFile = (Join-Path -Path $rave.sourceFilepath -ChildPath $rave.sourceFilename) -replace '"',""
+    $sourceFile = (Join-Path -Path $rave.employeeFilepath -ChildPath $rave.employeeSourceFilename) -replace '"',""
     $destinationUrl = ($rave.rave_destinationurl) -replace '"', ""
 
 
