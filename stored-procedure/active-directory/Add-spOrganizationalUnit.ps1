@@ -49,7 +49,12 @@ function Add-spOrganizationalUnit {
         $cmd.Parameters[14].Value = $ou.AreAccessRulesCanonical
         $cmd.Parameters[15].Value = $ou.AreAuditRulesCanonical
         
-        $cmd.ExecuteNonQuery()
+        $return = $cmd.ExecuteNonQuery()
+        if($return -eq -1){
+            Write-Verbose "Sql command to insert OU data success."
+        } else {
+            Write-Warning "Sql command failed to insert OU data: $($_.Exception.Message) "
+        }
     } catch {
         Write-Warning "Add-spOrganizationalUnit failed: $($_.Exception.Message) "
         continue

@@ -38,7 +38,12 @@ function Add-spOrganizationalUnitAcl{
         $cmd.Parameters[9].Value = $acl.ObjectFlags
         $cmd.Parameters[10].Value = $guid
         
-        $cmd.ExecuteNonQuery()
+        $return = $cmd.ExecuteNonQuery()
+        if($return -eq -1){
+            Write-Verbose "Sql command to insert OU ACL data success."
+        } else {
+            Write-Warning "Sql command failed to insert OU ACL data: $($_.Exception.Message) "
+        }
     } catch {
         Write-Warning "Add-spOrganizationalUnitAcl failed: $($_.Exception.Message) "
         continue

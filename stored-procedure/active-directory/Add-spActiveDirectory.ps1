@@ -17,7 +17,13 @@ function Add-spActiveDirectory {
         $cmd.Parameters[0].Value = $ActiveDirectory.Name
         $cmd.Parameters[1].Value = $ActiveDirectory.Value
         
-        $cmd.ExecuteNonQuery()
+        $return = $cmd.ExecuteNonQuery()
+        if($return -eq -1){
+            Write-Verbose "Sql command to insert Active Directory data success."
+        } else {
+            Write-Warning "Sql command failed to insert Active Directory data: $($_.Exception.Message) "
+        }
+
     } catch {
         Write-Warning "Add-fnActiveDirectory failed: $($_.Exception.Message) "
         continue
