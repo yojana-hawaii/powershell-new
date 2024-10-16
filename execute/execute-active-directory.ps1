@@ -1,5 +1,5 @@
 
-$startTimer = Start-Timer
+
 
 $configHelper       = @(Get-ChildItem -Path "$PWD\config-helper\*.ps1"                          -ErrorAction SilentlyContinue -Recurse)
 $public             = @(Get-ChildItem -Path "$PWD\public\active-directory\*.ps1"                -ErrorAction SilentlyContinue -Recurse)
@@ -19,6 +19,7 @@ foreach ($import in @($configHelper + $private + $public + $StoredProcedure + $u
     }
     
 }
+$startTimer = Start-Timer
 
 Add-fnActiveDirectory -verbose
 Add-fnOrganizationalUnit -verbose

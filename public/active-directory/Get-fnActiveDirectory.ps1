@@ -2,8 +2,6 @@ function Get-fnActiveDirectory {
     [CmdletBinding()]
     param()
 
-    $startTimer = Start-Timer
-
     $forest  = Get-fnForest
     $domain  = Get-fnDomain
     $rootDse = Get-fnRootDse
@@ -74,10 +72,6 @@ function Get-fnActiveDirectory {
     $data.DnsSrv                        = (Get-fnDnsData -domain $domain.DNSRoot).SRV    
     $data.DnsA                          = (Get-fnDnsData -domain $domain.DNSRoot).A
 
-
-    $totalTime = Stop-Timer -Start $startTimer
-    Write-Verbose "Active Directory information gathering completed. It took $totalTime"
-    
     return $data
 }
 # Get-fnActiveDirectory

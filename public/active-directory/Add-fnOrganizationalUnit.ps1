@@ -1,7 +1,6 @@
 function Add-fnOrganizationalUnit {
     $organizationalUnits = Get-fnOrganizationalUnit -Verbose
 
-    $startTimer = Start-Timer
     foreach($ou in $organizationalUnits)
     {
         Add-spOrganizationalUnit -organizational_unit $ou -Verbose
@@ -10,9 +9,6 @@ function Add-fnOrganizationalUnit {
         }
     }
 
-
-    $totalTime = Stop-Timer -Start $startTimer
-    Write-Verbose "Organizational Unit insert completed. It took $totalTime"
 }
 
 # Add-fnOrganizationalUnit -verbose
