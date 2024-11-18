@@ -10,7 +10,9 @@ function Export-fnIncompleteOrder {
     $labAlarmDays       = $config.labAlarmDays
     $labFileDestination = (Join-Path -Path $config.labFileDestination -ChildPath "*") -replace '"',""
     $labGroups          = (($config.labGroups) -replace '"',"").Split(",")
-    
+    $futureLab          = (($config.futureLab) -replace '"',"")
+    $deletedBucket      = (($config.deletedBucket) -replace '"',"")
+
     $labEmailSubject    = (($config.labEmailSubject) -replace '"',"")
     $labBodyGreetings   = (($config.labBodyGreetings) -replace '"',"")
     $labBodySuccess     = (($config.labBodySuccess) -replace '"',"")
@@ -50,7 +52,7 @@ function Export-fnIncompleteOrder {
         $body       = "$labBodyGreetings`n`n$labBodyDownloadSource`n`n$labBodySignoff"
     } elseif( -not $fileStatus[1]){
         Write-Verbose "Create new Destination files grouped by $($labGroups[0]) and $($labGroups[1])"
-        $groupedData = Split-fnCsvIntoMultipleCsv -CsvfileToSplit $labSourceFile -destinationPath $labFileDestination -excludeDays $labAlarmDays -group1 $labGroups[0] -group2 $labGroups[1] 
+        $groupedData = Split-fnCsvIntoMultipleCsv -CsvfileToSplit $labSourceFile -destinationPath $labFileDestination -excludeDays $labAlarmDays -group1 $labGroups[0] -group2 $labGroups[1] -futureLabBucket $futureLab -deletedBucket $deletedBucket
         $allFilesCreatedSuccessfully = Export-fnGroupObjectToSeparateCsv -GroupedObject $groupedData
         $body           = "$labBodyGreetings`n`n$labBodySuccess`n`n$labBodySignoff"
     }
@@ -63,7 +65,7 @@ function Export-fnIncompleteOrder {
         $cc         = $ccfail
     }
     Write-Verbose "TO: $to FROM: $from CC:$CC SMTP: $smtp Subject: $subject Body: $body" 
-    Send-MailMessage -From $from -To $to -Cc $cc  -Subject $subject -Body $body -SmtpServer $smtp
+    # Send-MailMessage -From $from -To $to -Cc $cc  -Subject $subject -Body $body -SmtpServer $smtp
 
 }
 
