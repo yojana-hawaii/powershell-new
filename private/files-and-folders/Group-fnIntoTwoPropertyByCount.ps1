@@ -11,12 +11,16 @@ function Group-fnIntoTwoPropertyByCount {
         [string]$secondGroup
     )
 
+    Write-Verbose "Separate group for deleted buckets"
+    $deleted = $data | Where-Object {$_.Bucket -eq "deletedocuments"} | Group-Object -Property "Bucket"
+
     Write-Verbose "Group dataset by two property. First group $firstgroup if count over $countSplit. Remaining in second group $secondGroup "
-    $grouped = $data | Group-Object -Property $firstGroup
+    $grouped = $data | Where-Object {$_.Bucket -ne "deletedocuments"}| Group-Object -Property $firstGroup
     $provider = $grouped | Where-Object { $_.Count -ge $CountSplit}
 
     $dept = ($grouped |Where-Object { $_.count -lt $CountSplit } | select-object -ExpandProperty Group) | Group-Object -Property $secondGroup
 
     $grouped = $provider + $dept
+    $grouped = $grouped + $deleted
     return $grouped 
 }
