@@ -65,7 +65,7 @@ function Export-fnIncompleteOrder {
         $cc         = $ccfail
     }
     Write-Verbose "TO: $to FROM: $from CC:$CC SMTP: $smtp Subject: $subject Body: $body" 
-    # Send-MailMessage -From $from -To $to -Cc $cc  -Subject $subject -Body $body -SmtpServer $smtp
+    Send-MailMessage -From $from -To $to -Cc $cc  -Subject $subject -Body $body -SmtpServer $smtp
 
 }
 
