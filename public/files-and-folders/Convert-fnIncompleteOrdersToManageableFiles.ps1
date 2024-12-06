@@ -1,10 +1,8 @@
+set-location "z:"
 
 function Convert-fnIncompleteOrdersToManageableFiles {
     [CmdletBinding()]
     param()
-    set-location Z:\
-    $Global:today = $null
-    $today = Get-Date
 
     #region - Import necessary configs and private functions #>
 
@@ -90,12 +88,22 @@ function Convert-fnIncompleteOrdersToManageableFiles {
     if($sendEmail) {
         
         $email = Update-fnOrderEmailConfig -email $email
-        Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
-        # Send-MailMessage -From $email.from -To $email.from -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
+        # Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
+        Send-MailMessage -From $email.from -To $email.from -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
     }
 
     $totalTime = Stop-Timer -Start $startTimer
     Write-Information "Csv file split file complete. It took $totalTime"    
 }
 
+
+Start-Transcript -Path "$pwd\log\Convert-fnIncompleteOrdersToManageableFiles_$mmddyyyy.txt"
+
+$Global:today = $null
+$today = Get-Date
+$mmddyyyy = Get-Date -Format "MM-dd-yyyy"
+
 Convert-fnIncompleteOrdersToManageableFiles  -Verbose -InformationAction Continue
+
+Stop-Transcript
+
