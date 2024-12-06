@@ -11,3 +11,4 @@ private/organization-specific/Convert-fnOrganizationMapping.ps1
 private/organization-specific/Convert-fnOrg2ConvertToEmail.ps1
 private/organization-specific/Convert-fnLabService.ps1
 private/organization-specific/*
+log/*

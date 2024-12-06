@@ -8,6 +8,8 @@ function Initialize-fnOrderConfigs {
     Write-Information "Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "
     $orderPath          = $ffConfig.orderPath
     $sourcePath         = Join-Path -Path $orderPath -ChildPath $ffConfig.sourcePath
+    $referencesPath     = Join-Path -Path $orderPath -ChildPath $ffConfig.references
+    
     $deletedBucket      = (($ffConfig.delete) -replace '"',"").Split(",")
     $group              = (($ffConfig.group) -replace '"',"").Split(",")
 
@@ -20,7 +22,7 @@ function Initialize-fnOrderConfigs {
         alarm           = (($ffConfig.labAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
         exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $orderPath -ChildPath $ffConfig.internalLab) -replace '"',""
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalLab) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -43,7 +45,7 @@ function Initialize-fnOrderConfigs {
         alarm           = (($ffConfig.consultAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
         exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $orderPath -ChildPath $ffConfig.internalConsult) -replace '"',""
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalConsult) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -65,7 +67,7 @@ function Initialize-fnOrderConfigs {
         alarm           = (($ffConfig.imagingAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
         exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $orderPath -ChildPath $ffConfig.internalImaging) -replace '"',""
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalImaging) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
