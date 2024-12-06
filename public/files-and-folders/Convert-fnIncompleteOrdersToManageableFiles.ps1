@@ -1,4 +1,4 @@
-set-location "z:"
+set-location "\\fileserver\it\apps\powershell"
 
 function Convert-fnIncompleteOrdersToManageableFiles {
     [CmdletBinding()]
