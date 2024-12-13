@@ -1,9 +1,32 @@
 function Export-fnEmployeeToDialMy {
     [CmdletBinding()]
     param()
-    <# Get data from config file. Strip " (double quote). Pulling path from config file adds double quotes everywhere #>
-   
-    $config                         = Get-fnFiesAndFoldersConfig
+
+    #region - Import necessary configs and private functions #>
+
+    Write-Verbose "Initialize private functions & config helpers in Export-fnEmployeeToDialMy.ps1"
+    $configHelper       = @(Get-ChildItem -Path "$PWD\config-helper\Get-fnEmployeeConfig.ps1"              -ErrorAction SilentlyContinue -Recurse)
+    $private            = @(Get-ChildItem -Path "$PWD\private\employee\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
+    $org                = @(Get-ChildItem -Path "$PWD\private\organization-specific\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
+    $utility            = @(Get-ChildItem -Path "$PWD\private\utility\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
+
+    foreach ($import in @($configHelper + $private + $org + $utility)){
+        try{
+            . $import.Fullname
+            Write-Information "importing $($import.Fullname)"
+        } catch {
+            Write-Error -Message "Failed to import functions from $($import.Fullname): $_"
+            $true
+        }
+        
+    }
+    $import = $null
+    #endregion
+
+    Write-Verbose "Initialize rave config from employee config file."
+    $config = Get-fnEmployeeConfig
+
+    Write-Verbose "Strip `" (double quote). Pull path from config file adds double quotes everywhere"
     $sourceFile                     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.employeeSourceFilename) -replace '"',""
     $additionalPhoneNumbersFile     = (Join-Path -Path $config.employeeFilepath -ChildPath $config.additionalPhoneNumbers) -replace '"',""
     $dialMyCsv                      = (Join-Path -Path $config.employeeFilepath -ChildPath $config.dialMyCsv) -replace '"',""
@@ -23,4 +46,10 @@ function Export-fnEmployeeToDialMy {
         
 }
 
-# Export-fnEmployeeToDialMy -Verbose
+$Global:today = $null
+$today = Get-Date
+$mmddyyyy = Get-Date -Format "MM-dd-yyyy"
+
+Start-Transcript -Path "$pwd\log\Export-fnEmployeeToDialM_$mmddyyyy.txt" -Append
+Export-fnEmployeeToDialMy  -Verbose -InformationAction Continue
+Stop-Transcript
