@@ -2,7 +2,7 @@ function Initialize-fnOrderConfigs {
     [CmdletBinding()]
     param()
     Write-Verbose "Initializing the config files and create necessary PSCustomObjects in Initialize-fnOrderConfigs.ps1"
-    $ffConfig           = Get-fnFiesAndFoldersConfig
+    $ffConfig           = Get-fnClinicalConfig
     $emailConfig        = Get-fnEmailConfig
 
     Write-Information "Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "

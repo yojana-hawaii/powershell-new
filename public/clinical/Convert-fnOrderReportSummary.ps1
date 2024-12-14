@@ -1,14 +1,14 @@
 set-location "\\fileserver\it\apps\powershell"
 
-function Convert-fnIncompleteOrdersToManageableFiles {
+function Convert-fnOrderReportSummary {
     [CmdletBinding()]
     param()
 
     #region - Import necessary configs and private functions #>
 
-    Write-Verbose "Initialize private functions & config helpers in Convert-fnIncompleteOrdersToManageableFiles.ps1"
+    Write-Verbose "Initialize private functions & config helpers in Convert-fnOrderReportSummary.ps1"
     $configHelper       = @(Get-ChildItem -Path "$PWD\config-helper\*.ps1"              -ErrorAction SilentlyContinue -Recurse)
-    $private            = @(Get-ChildItem -Path "$PWD\private\files-and-folders\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
+    $private            = @(Get-ChildItem -Path "$PWD\private\clinical\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
     $utility            = @(Get-ChildItem -Path "$PWD\private\utility\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
 
     foreach ($import in @($configHelper + $private + $utility)){
@@ -35,7 +35,7 @@ function Convert-fnIncompleteOrdersToManageableFiles {
     $email.emailBody6 = @{}
     
     for($i=0; $i -le ($orderConfig.Count - 1); $i++){
-        Write-Verbose "Current loop, $($orderConfig[$i].type) back in Convert-fnIncompleteOrdersToManageableFiles.ps1"
+        Write-Verbose "Current loop, $($orderConfig[$i].type) back in Convert-fnOrderReportSummary.ps1"
 
         $email.emailBody4["Internal-$($orderConfig[$i].type)"] = $orderConfig[$i].intDestination
         $email.emailBody4["External-$($orderConfig[$i].type)"] = $orderConfig[$i].extDestination
@@ -51,7 +51,7 @@ function Convert-fnIncompleteOrdersToManageableFiles {
         }
         <# -not $fileStatus.sourceValid > email for new file #> 
         if( -not $fileStatus.sourceValid){
-            Write-Output "Source file for $($orderConfig[$i].type) not valid in Convert-fnIncompleteOrdersToManageableFiles"
+            Write-Output "Source file for $($orderConfig[$i].type) not valid in Convert-fnOrderReportSummary"
             $fileToDownload = (Split-Path $orderConfig[$i].source -Leaf) -replace ".csv", ""
             $email.emailBody3 += "$($orderConfig[$i].type) ($fileToDownload),"
             $email.emailBody3a = "$(Split-Path $orderConfig[$i].source -Parent)"
@@ -60,7 +60,7 @@ function Convert-fnIncompleteOrdersToManageableFiles {
         }
         <#  -not $fileStatus.destinationValid  > create destination file #>
         if( -not $fileStatus.destinationValid){
-            Write-Information "Create new Destination files in Convert-fnIncompleteOrdersToManageableFiles "
+            Write-Information "Create new Destination files in Convert-fnOrderReportSummary "
             $orderConfig[$i] = Remove-fnOrderNotReadyForFollowup -orderHash $orderConfig[$i]
             $orderConfig[$i] = Get-fnDeletedOrders -objectHash $orderConfig[$i]
             $orderConfig[$i] = Get-fnInternalOrders -objecthash $orderConfig[$i]
@@ -97,13 +97,12 @@ function Convert-fnIncompleteOrdersToManageableFiles {
 }
 
 
-Start-Transcript -Path "$pwd\log\Convert-fnIncompleteOrdersToManageableFiles_$mmddyyyy.txt"
 
 $Global:today = $null
 $today = Get-Date
 $mmddyyyy = Get-Date -Format "MM-dd-yyyy"
 
-Convert-fnIncompleteOrdersToManageableFiles  -Verbose -InformationAction Continue
-
+Start-Transcript -Path "$pwd\log\Convert-fnOrderReportSummary_$mmddyyyy.txt" -Append
+Convert-fnOrderReportSummary  -Verbose -InformationAction Continue
 Stop-Transcript
 

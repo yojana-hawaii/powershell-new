@@ -1,8 +1,8 @@
-function Get-fnFiesAndFoldersConfig {
+function Get-fnClinicalConfig {
     [CmdletBinding()]
     param()
 
-    $global = Get-Content "$PWD\config\files-and-folders.conf"
+    $global = Get-Content "$PWD\config\clinical.conf"
     $conf = @()
 
     $global | ForEach-Object {

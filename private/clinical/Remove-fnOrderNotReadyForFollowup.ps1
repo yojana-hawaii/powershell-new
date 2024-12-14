@@ -18,8 +18,16 @@ function Remove-fnOrderNotReadyForFollowup {
     3. remove data with additional exceptions
    #>
     $data = Read-fnCsvDefaultHeader -filename $orderHash.source
+    Write-Information "Removing closed orders"
     $data = $data | Where-Object {$_.currentStatus -ne "closed" }
-    $data = $data | Where-Object {$null -ne $_.$filterColumn -and $_.$filterColumn -ne "" -and (New-TimeSpan -Start $_.$filterColumn -End $today  ).Days -gt $filterValue }
-    $orderHash.externaldata = $data | Where-Object {-not ($_.$excludeColumn1 -eq $excludeValue1 -and (New-TimeSpan -Start $_.$excludeColumn2 -End $today  ).Days -gt $excludeValue2 )}
+    Write-Information "Removing orders from past $filterValue days"
+    $data = $data | Where-Object {$null -ne $_.$filterColumn -and $_.$filterColumn -ne "" ` -and (New-TimeSpan -Start $_.$filterColumn -End $today  ).Days -gt $filterValue }
+
+    Write-Information "Removing orders in $excludeValue1 $excludeColumn1 from past $excludeValue2 $excludeColumn2 days"
+    $data = $data | Where-Object { -not ($_.$excludeColumn1 -eq $excludeValue1  ` -and  (New-TimeSpan -Start $_.$excludeColumn2 -End $today  ).Days -le $excludeValue2 )}
+
+    Write-Information "$($data.count) $($orderHash.type) orders need to be closed"
+
+    $orderHash.externaldata = $data 
     return $orderHash
 }
