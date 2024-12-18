@@ -28,11 +28,17 @@ function Convert-fnOrderReportSummary {
 
     $orderConfig = Initialize-fnOrderConfigs
     $email = $orderConfig[3]
-    $sendEmail = $false
-    $orderConfig = $orderConfig[0..($orderConfig.Count - 2)]
-    $email.emailBody4 = @{}
+    Add-Member -InputObject $email -NotePropertyName emailBody1 -NotePropertyValue "Hello all, This is an automated email for incomplete labs, consults & imaging."
+    $email | Add-Member -MemberType NoteProperty -Name emailBody2 -Value ""       # do nothing
+    $email | Add-Member -MemberType NoteProperty -Name emailBody3 -Value ""       # download source files 
+    $email | Add-Member -MemberType NoteProperty -Name emailBody3a -Value ""      # source file unc 
+    $email | Add-Member -MemberType NoteProperty -Name emailBody4 -Value @{}      # file location
+    $email | Add-Member -MemberType NoteProperty -Name emailBody5 -Value $null    # array of array into html table
+    $email | Add-Member -MemberType NoteProperty -Name emailBody6 -Value @{}      # applied filters for transparency
     $email.emailBody4["DELETE"] = $orderConfig[0].delDestination
-    $email.emailBody6 = @{}
+    $sendEmail = $false
+ 
+    $orderConfig = $orderConfig[0..($orderConfig.Count - 2)]
     
     for($i=0; $i -le ($orderConfig.Count - 1); $i++){
         Write-Verbose "Current loop, $($orderConfig[$i].type) back in Convert-fnOrderReportSummary.ps1"
@@ -88,8 +94,8 @@ function Convert-fnOrderReportSummary {
     if($sendEmail) {
         
         $email = Update-fnOrderEmailConfig -email $email
-        Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
-        # Send-MailMessage -From $email.from -To $email.from -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
+        # Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
+        Send-MailMessage -From $email.from -To $email.from -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
     }
 
     $totalTime = Stop-Timer -Start $startTimer

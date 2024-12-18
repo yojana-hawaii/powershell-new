@@ -14,7 +14,7 @@ function Export-fnGroupedObjectToSeparateCsv {
     Remove-Item -Path (Join-Path -Path $destination -ChildPath "*") -Force
     try{
         foreach($object in $groupObject){
-            $filename = "$(($object.Name -replace ", ", "_") -replace " ","_")_$($object.count)_open.csv"
+            $filename = "$((($object.Name -replace ", ", "_") -replace " ","_") -replace "/","_")_$($object.count)_open.csv"
             $filepath = (Join-Path -Path $destination -ChildPath $filename) -replace '"',""
             
             Write-Information "Creating file $filepath"

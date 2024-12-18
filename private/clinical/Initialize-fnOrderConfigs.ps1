@@ -93,14 +93,6 @@ function Initialize-fnOrderConfigs {
         subject         = "Incomplete orders (Labs, Consults & Imaging)."
         bodyashtml      = $true
         body            = ""
-
-        emailBody1      = ($ffConfig.emailBody1) -replace '"',""
-        emailBody2      = "" # all go - do nothing
-        emailBody3      = "" # source files to download 
-        emailBody3a     = "" # source file unc 
-        emailBody4      = "" # file location
-        emailBody5      = $null #array of array into html table
-        emailBody6      = "" # applied filters for transparency
         emailSig        = "$emailName "
     }
 
