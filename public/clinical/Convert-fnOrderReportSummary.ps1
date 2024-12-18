@@ -27,25 +27,14 @@ function Convert-fnOrderReportSummary {
     $startTimer = Start-Timer
 
     $orderConfig = Initialize-fnOrderConfigs
-    $email = $orderConfig[3]
-    Add-Member -InputObject $email -NotePropertyName emailBody1 -NotePropertyValue "Hello all, This is an automated email for incomplete labs, consults & imaging."
-    $email | Add-Member -MemberType NoteProperty -Name emailBody2 -Value ""       # do nothing
-    $email | Add-Member -MemberType NoteProperty -Name emailBody3 -Value ""       # download source files 
-    $email | Add-Member -MemberType NoteProperty -Name emailBody3a -Value ""      # source file unc 
-    $email | Add-Member -MemberType NoteProperty -Name emailBody4 -Value @{}      # file location
-    $email | Add-Member -MemberType NoteProperty -Name emailBody5 -Value $null    # array of array into html table
-    $email | Add-Member -MemberType NoteProperty -Name emailBody6 -Value @{}      # applied filters for transparency
-    $email.emailBody4["DELETE"] = $orderConfig[0].delDestination
+    
+    $email = Initialize-fnEmailConfigs
+    Add-fnEmailPropertyForOrders -email $email
     $sendEmail = $false
  
-    $orderConfig = $orderConfig[0..($orderConfig.Count - 2)]
     
     for($i=0; $i -le ($orderConfig.Count - 1); $i++){
         Write-Verbose "Current loop, $($orderConfig[$i].type) back in Convert-fnOrderReportSummary.ps1"
-
-        $email.emailBody4["Internal-$($orderConfig[$i].type)"] = $orderConfig[$i].intDestination
-        $email.emailBody4["External-$($orderConfig[$i].type)"] = $orderConfig[$i].extDestination
-        $email.emailBody6["$($orderConfig[$i].type)"] = $($orderConfig[$i].internalList)
 
         $fileStatus  = Compare-fnValidateSourceAndDestination -orderHash $orderConfig[$i]
 
@@ -64,6 +53,11 @@ function Convert-fnOrderReportSummary {
             $sendEmail = $true
             continue
         }
+
+        $email.emailBody4["Internal-$($orderConfig[$i].type)"] = $orderConfig[$i].intDestination
+        $email.emailBody4["External-$($orderConfig[$i].type)"] = $orderConfig[$i].extDestination
+        
+
         <#  -not $fileStatus.destinationValid  > create destination file #>
         if( -not $fileStatus.destinationValid){
             Write-Information "Create new Destination files in Convert-fnOrderReportSummary "
@@ -88,7 +82,7 @@ function Convert-fnOrderReportSummary {
             $sendEmail = $true
             continue
         }
-        
+        $email.emailBody6["$($orderConfig[$i].type)"] = $($orderConfig[$i].internalList)
         
     }
     if($sendEmail) {
