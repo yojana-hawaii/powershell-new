@@ -26,63 +26,63 @@ function Convert-fnOrderReportSummary {
     
     $startTimer = Start-Timer
 
-    $orderConfig = Initialize-fnOrderConfigs
+    $order = Initialize-fnOrderConfigs
     
     $email = Initialize-fnEmailConfigs
     Add-fnEmailPropertyForOrders -email $email
     $sendEmail = $false
  
     
-    for($i=0; $i -le ($orderConfig.Count - 1); $i++){
-        Write-Verbose "Current loop, $($orderConfig[$i].type) back in Convert-fnOrderReportSummary.ps1"
+    for($i=0; $i -le ($order.Count - 1); $i++){
+        Write-Verbose "Current loop, $($order[$i].type) back in Convert-fnOrderReportSummary.ps1"
 
-        $fileStatus  = Compare-fnValidateSourceAndDestination -orderHash $orderConfig[$i]
+        $fileStatus  = Compare-fnValidateSourceAndDestination -orderHash $order[$i]
 
         <# $fileStatus.sourceValid & $fileStatus.destinationValid > no action needed #>
         if ($fileStatus.sourceValid -and $fileStatus.destinationValid) {
-            Write-Output "Do nothing for $($orderConfig[$i].type)"
-            $email.emailBody2 += "$($orderConfig[$i].type),"
+            Write-Output "Do nothing for $($order[$i].type)"
+            $email.emailBody2 += "$($order[$i].type),"
             continue
         }
         <# -not $fileStatus.sourceValid > email for new file #> 
         if( -not $fileStatus.sourceValid){
-            Write-Output "Source file for $($orderConfig[$i].type) not valid in Convert-fnOrderReportSummary"
-            $fileToDownload = (Split-Path $orderConfig[$i].source -Leaf) -replace ".csv", ""
-            $email.emailBody3 += "$($orderConfig[$i].type) ($fileToDownload),"
-            $email.emailBody3a = "$(Split-Path $orderConfig[$i].source -Parent)"
+            Write-Output "Source file for $($order[$i].type) not valid in Convert-fnOrderReportSummary"
+            $fileToDownload = (Split-Path $order[$i].source -Leaf) -replace ".csv", ""
+            $email.emailBody3 += "$($order[$i].type) ($fileToDownload),"
+            $email.emailBody3a = "$(Split-Path $order[$i].source -Parent)"
             $sendEmail = $true
             continue
         }
 
-        $email.emailBody4["Internal-$($orderConfig[$i].type)"] = $orderConfig[$i].intDestination
-        $email.emailBody4["External-$($orderConfig[$i].type)"] = $orderConfig[$i].extDestination
+        $email.emailBody4["Internal-$($order[$i].type)"] = $order[$i].intDestination
+        $email.emailBody4["External-$($order[$i].type)"] = $order[$i].extDestination
         
 
         <#  -not $fileStatus.destinationValid  > create destination file #>
         if( -not $fileStatus.destinationValid){
             Write-Information "Create new Destination files in Convert-fnOrderReportSummary "
-            $orderConfig[$i] = Remove-fnOrderNotReadyForFollowup -orderHash $orderConfig[$i]
-            $orderConfig[$i] = Get-fnDeletedOrders -objectHash $orderConfig[$i]
-            $orderConfig[$i] = Get-fnInternalOrders -objecthash $orderConfig[$i]
+            $order[$i] = Remove-fnOrderNotReadyForFollowup -orderHash $order[$i]
+            $order[$i] = Get-fnDeletedOrders -objectHash $order[$i]
+            $order[$i] = Get-fnInternalOrders -objecthash $order[$i]
             
-            $orderConfig[$i].extSummary     = $orderConfig[$i].externaldata | Group-Object -Property $orderConfig[$i].summaryGroup | Select-Object Name, Count
-            $orderConfig[$i].intSummary     = $orderConfig[$i].internaldata | Group-Object -Property $orderConfig[$i].summaryGroup | Select-Object Name, Count
+            $order[$i].extSummary     = $order[$i].externaldata | Group-Object -Property $order[$i].summaryGroup | Select-Object Name, Count
+            $order[$i].intSummary     = $order[$i].internaldata | Group-Object -Property $order[$i].summaryGroup | Select-Object Name, Count
 
-            $orderConfig[$i].deletedata     = $orderConfig[$i].deletedata   | Group-Object -Property $orderConfig[$i].deletegroup
-            $orderConfig[$i].internaldata   = $orderConfig[$i].internaldata | Group-Object -Property $orderConfig[$i].internalgroup
-            $orderConfig[$i].externaldata   = $orderConfig[$i].externaldata | Group-Object -Property $orderConfig[$i].externalgroup
+            $order[$i].deletedata     = $order[$i].deletedata   | Group-Object -Property $order[$i].deletegroup
+            $order[$i].internaldata   = $order[$i].internaldata | Group-Object -Property $order[$i].internalgroup
+            $order[$i].externaldata   = $order[$i].externaldata | Group-Object -Property $order[$i].externalgroup
             
-            Export-fnGroupedObjectToSeparateCsv -groupObject $orderConfig[$i].internaldata -destination $orderConfig[$i].intDestination
-            Export-fnGroupedObjectToSeparateCsv -groupObject $orderConfig[$i].externaldata -destination $orderConfig[$i].extDestination
-            Export-fnGroupedObjectToSeparateCsv -groupObject $orderConfig[$i].deletedata -destination $orderConfig[$i].delDestination
+            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].internaldata -destination $order[$i].intDestination
+            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].externaldata -destination $order[$i].extDestination
+            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].deletedata -destination $order[$i].delDestination
 
-            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $orderConfig[$i].extSummary -type $orderConfig[$i].type -array2_prefix "External"            
-            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $orderConfig[$i].intSummary -type $orderConfig[$i].type -array2_prefix "Internal"      
+            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $order[$i].extSummary -type $order[$i].type -array2_prefix "External"            
+            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $order[$i].intSummary -type $order[$i].type -array2_prefix "Internal"      
             
             $sendEmail = $true
             continue
         }
-        $email.emailBody6["$($orderConfig[$i].type)"] = $($orderConfig[$i].internalList)
+        $email.emailBody6["$($order[$i].type)"] = $($order[$i].internalList)
         
     }
     if($sendEmail) {

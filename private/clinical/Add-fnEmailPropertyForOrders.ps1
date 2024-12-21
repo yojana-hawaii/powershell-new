@@ -12,6 +12,6 @@ function Add-fnEmailPropertyForOrders {
     $email | Add-Member -MemberType NoteProperty -Name emailBody4 -Value @{}      # file location
     $email | Add-Member -MemberType NoteProperty -Name emailBody5 -Value $null    # array of array into html table
     $email | Add-Member -MemberType NoteProperty -Name emailBody6 -Value @{}      # applied filters for transparency
-    $email.emailBody4["DELETE"] = $orderConfig[0].delDestination
+    $email.emailBody4["DELETE"] = $order[0].delDestination
 
 }
