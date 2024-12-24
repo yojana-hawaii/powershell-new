@@ -31,6 +31,8 @@ function Convert-fnOrderReportSummary {
     $email = Initialize-fnOrderEmailConfigs 
     $sendEmail = $false
  
+    $OrdersToDelete = $null
+    $lab = $null
     Write-Verbose "Looping through $($order.type)"
     for($i=0; $i -le ($order.Count - 1); $i++){
         Write-Information "Current loop - $($order[$i].type )"
@@ -46,10 +48,15 @@ function Convert-fnOrderReportSummary {
             else {
                 $order[$i] =  Update-fnInValidDestination -email $email -order $order[$i]
                 $sendEmail = $true
+
+                $OrdersToDelete += $order[$i].deletedata
             }
         }    
     }
     
+    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($lab.delDestination)\delete.csv" -NoTypeInformation
+
+
     if($sendEmail) {
         
         $email = Update-fnEmailBodyHtml -email $email

@@ -7,8 +7,6 @@ function Export-fnGroupedObjectToSeparateCsv {
         [string]$destination
     )
 
-    # $fileCreationSuccess = $false
-
     Write-Verbose "Created CSV file for each group in Export-fnGroupedObjectToSeparateCsv"
     Write-Information "Removing old files from $destination."
     Remove-Item -Path (Join-Path -Path $destination -ChildPath "*") -Force
@@ -21,13 +19,8 @@ function Export-fnGroupedObjectToSeparateCsv {
             ($object.Group) | Select-Object Name,AthenaPID,`DocumentID,PerformDate,Bucket,OrderProvider,Order,CurrentStatus,`
                                 @{Name="ServiceProvider"; Expression={Convert-fnExternalServiceProvider -serviceProvider $_."sendto provdr"}}`
                                 | Export-csv -Path $filepath -NoTypeInformation
-            # $fileCreationSuccess = $true
         }
     }catch{
         Write-Warning "Export-fnGroupedObjectToSeparateCsv failed: $($_.Exception.Message)"
-        # $fileCreationSuccess = $false
-
     }
-    # return $fileCreationSuccess
-    
 }

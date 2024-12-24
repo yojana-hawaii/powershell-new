@@ -15,7 +15,6 @@ function Update-fnInvalidDestination {
         
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.internaldata -destination $order.intDestination
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.externaldata -destination $order.extDestination
-    Export-fnGroupedObjectToSeparateCsv -groupObject $order.deletedata -destination $order.delDestination
 
     Update-fnEmailBodyInvalidDestination -email $email -order $order
     
