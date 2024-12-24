@@ -54,7 +54,7 @@ function Convert-fnOrderReportSummary {
         }    
     }
     
-    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($lab.delDestination)\delete.csv" -NoTypeInformation
+    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
 
 
     if($sendEmail) {
