@@ -5,7 +5,7 @@ function Read-fnCsvDefaultHeader {
         [string]$filename    
     )
 
-    Write-Verbose "Reading csv file in Read-fnDefaultHeader.ps1"
+    Write-Information "Reading csv file in Read-fnDefaultHeader.ps1"
 
     if (Test-Path -Path $filename){
         Write-Information "Test File path: File exists"

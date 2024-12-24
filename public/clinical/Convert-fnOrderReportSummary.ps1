@@ -26,68 +26,33 @@ function Convert-fnOrderReportSummary {
     
     $startTimer = Start-Timer
 
+    Write-Verbose "Initializing order and email configs."
     $order = Initialize-fnOrderConfigs
-    
-    $email = Initialize-fnEmailConfigs
-    Add-fnEmailPropertyForOrders -email $email
+    $email = Initialize-fnOrderEmailConfigs 
     $sendEmail = $false
  
-    
+    Write-Verbose "Looping through $($order.type)"
     for($i=0; $i -le ($order.Count - 1); $i++){
-        Write-Verbose "Current loop, $($order[$i].type) back in Convert-fnOrderReportSummary.ps1"
+        Write-Information "Current loop - $($order[$i].type )"
 
-        $fileStatus  = Compare-fnValidateSourceAndDestination -orderHash $order[$i]
-
-        <# $fileStatus.sourceValid & $fileStatus.destinationValid > no action needed #>
-        if ($fileStatus.sourceValid -and $fileStatus.destinationValid) {
-            Write-Output "Do nothing for $($order[$i].type)"
-            $email.emailBody2 += "$($order[$i].type),"
-            continue
-        }
-        <# -not $fileStatus.sourceValid > email for new file #> 
-        if( -not $fileStatus.sourceValid){
-            Write-Output "Source file for $($order[$i].type) not valid in Convert-fnOrderReportSummary"
-            $fileToDownload = (Split-Path $order[$i].source -Leaf) -replace ".csv", ""
-            $email.emailBody3 += "$($order[$i].type) ($fileToDownload),"
-            $email.emailBody3a = "$(Split-Path $order[$i].source -Parent)"
+        if( -not (Test-fnSourceFile -sourceFile $order[$i].source -sourceFileValidDays 7) ){
+            Update-fnInvalidSource -email $email -type $order[$i].type -sourceFile $order[$i].source 
             $sendEmail = $true
-            continue
-        }
+        } else {
 
-        $email.emailBody4["Internal-$($order[$i].type)"] = $order[$i].intDestination
-        $email.emailBody4["External-$($order[$i].type)"] = $order[$i].extDestination
-        
-
-        <#  -not $fileStatus.destinationValid  > create destination file #>
-        if( -not $fileStatus.destinationValid){
-            Write-Information "Create new Destination files in Convert-fnOrderReportSummary "
-            $order[$i] = Remove-fnOrderNotReadyForFollowup -orderHash $order[$i]
-            $order[$i] = Get-fnDeletedOrders -objectHash $order[$i]
-            $order[$i] = Get-fnInternalOrders -objecthash $order[$i]
-            
-            $order[$i].extSummary     = $order[$i].externaldata | Group-Object -Property $order[$i].summaryGroup | Select-Object Name, Count
-            $order[$i].intSummary     = $order[$i].internaldata | Group-Object -Property $order[$i].summaryGroup | Select-Object Name, Count
-
-            $order[$i].deletedata     = $order[$i].deletedata   | Group-Object -Property $order[$i].deletegroup
-            $order[$i].internaldata   = $order[$i].internaldata | Group-Object -Property $order[$i].internalgroup
-            $order[$i].externaldata   = $order[$i].externaldata | Group-Object -Property $order[$i].externalgroup
-            
-            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].internaldata -destination $order[$i].intDestination
-            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].externaldata -destination $order[$i].extDestination
-            Export-fnGroupedObjectToSeparateCsv -groupObject $order[$i].deletedata -destination $order[$i].delDestination
-
-            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $order[$i].extSummary -type $order[$i].type -array2_prefix "External"            
-            $email.emailBody5 = Join-fnTwoOrderArray -array1 $email.emailBody5 -array2 $order[$i].intSummary -type $order[$i].type -array2_prefix "Internal"      
-            
-            $sendEmail = $true
-            continue
-        }
-        $email.emailBody6["$($order[$i].type)"] = $($order[$i].internalList)
-        
+            if (Test-fnDestinationFile -sourceFile $order[$i].source -destinationFile $order[$i].extDestination ){
+                Update-fnValidSourceAndDestination -email $email -type $order[$i].type
+            }
+            else {
+                $order[$i] =  Update-fnInValidDestination -email $email -order $order[$i]
+                $sendEmail = $true
+            }
+        }    
     }
+    
     if($sendEmail) {
         
-        $email = Update-fnOrderEmailConfig -email $email
+        $email = Update-fnEmailBodyHtml -email $email
         # Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
         Send-MailMessage -From $email.from -To $email.from -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
     }

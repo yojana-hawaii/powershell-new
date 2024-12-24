@@ -1,28 +1,25 @@
 function Initialize-fnOrderConfigs {
     [CmdletBinding()]
     param()
-    Write-Verbose "Initializing the config files and create necessary PSCustomObjects in Initialize-fnOrderConfigs.ps1"
-    $ffConfig           = Get-fnClinicalConfig
-    $emailConfig        = Get-fnEmailConfig
-
-    Write-Information "Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "
-    $orderPath          = $ffConfig.orderPath
-    $sourcePath         = Join-Path -Path $orderPath -ChildPath $ffConfig.sourcePath
-    $referencesPath     = Join-Path -Path $orderPath -ChildPath $ffConfig.references
+    Write-Information "Initializing the config files and create necessary PSCustomObjects in Initialize-fnOrderConfigs.ps1"
+    $order           = Get-fnOrderConfig
     
-    $deletedBucket      = (($ffConfig.delete) -replace '"',"").Split(",")
-    $group              = (($ffConfig.group) -replace '"',"").Split(",")
-
-    $emailName          = ($ffConfig.emailSig) -replace '"',""
+    Write-Information "Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "
+    $orderPath          = $order.orderPath
+    $sourcePath         = Join-Path -Path $orderPath -ChildPath $order.sourcePath
+    $referencesPath     = Join-Path -Path $orderPath -ChildPath $order.references
+    
+    $deletedBucket      = (($order.delete) -replace '"',"").Split(",")
+    $group              = (($order.group) -replace '"',"").Split(",")
     
     Write-Information "Create PSCustomObject for labs, referrals and imaging orders."
     $labHash = [PSCustomObject]@{
         type            = "Labs"
-        source          = (Join-Path -Path $sourcePath -ChildPath $ffConfig.labFileName) -replace '"',""
-        alarm           = (($ffConfig.labAlarm) -replace '"',"").Split(",")
+        source          = (Join-Path -Path $sourcePath -ChildPath $order.labFileName) -replace '"',""
+        alarm           = (($order.labAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
-        exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalLab) -replace '"',""
+        exclude         = (($order.exclude) -replace '"',"").Split(",")
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalLab) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -34,18 +31,18 @@ function Initialize-fnOrderConfigs {
         externalgroup   = $group[0]
         externaldata    = ""
 
-        extDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.externalLabDest) -replace '"',""
-        intDestination  = (Join-path -Path $orderPath -ChildPath $ffConfig.internalLabDest) -replace '"',""
-        delDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.deleteDest) -replace '"',""
+        extDestination  = (Join-Path -Path $orderPath -ChildPath $order.externalLabDest) -replace '"',""
+        intDestination  = (Join-path -Path $orderPath -ChildPath $order.internalLabDest) -replace '"',""
+        delDestination  = (Join-Path -Path $orderPath -ChildPath $order.deleteDest) -replace '"',""
     }
 
     $consultHash = [PSCustomObject]@{
         type            = "Consult"
-        source          = (Join-Path -Path $sourcePath -ChildPath $ffConfig.consultFileName) -replace '"',""
-        alarm           = (($ffConfig.consultAlarm) -replace '"',"").Split(",")
+        source          = (Join-Path -Path $sourcePath -ChildPath $order.consultFileName) -replace '"',""
+        alarm           = (($order.consultAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
-        exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalConsult) -replace '"',""
+        exclude         = (($order.exclude) -replace '"',"").Split(",")
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalConsult) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -57,17 +54,17 @@ function Initialize-fnOrderConfigs {
         externalgroup   = $group[0]
         externaldata    = ""
 
-        extDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.externalConsultDest) -replace '"',""
-        intDestination  = (Join-path -Path $orderPath -ChildPath $ffConfig.internalConsultDest) -replace '"',""
-        delDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.deleteDest) -replace '"',""
+        extDestination  = (Join-Path -Path $orderPath -ChildPath $order.externalConsultDest) -replace '"',""
+        intDestination  = (Join-path -Path $orderPath -ChildPath $order.internalConsultDest) -replace '"',""
+        delDestination  = (Join-Path -Path $orderPath -ChildPath $order.deleteDest) -replace '"',""
     }
     $imagingHash = [PSCustomObject]@{
         type            = "Imaging"
-        source          = (Join-Path -Path $sourcePath  -ChildPath $ffConfig.imagingFileName) -replace '"',""
-        alarm           = (($ffConfig.imagingAlarm) -replace '"',"").Split(",")
+        source          = (Join-Path -Path $sourcePath  -ChildPath $order.imagingFileName) -replace '"',""
+        alarm           = (($order.imagingAlarm) -replace '"',"").Split(",")
         delete          = $deletedBucket
-        exclude         = (($ffConfig.exclude) -replace '"',"").Split(",")
-        internalList    = (Join-Path -Path $referencesPath -ChildPath $ffConfig.internalImaging) -replace '"',""
+        exclude         = (($order.exclude) -replace '"',"").Split(",")
+        internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalImaging) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -79,9 +76,9 @@ function Initialize-fnOrderConfigs {
         externalgroup   = $group[0]
         externaldata    = ""
 
-        extDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.externalImagingDest) -replace '"',""
-        intDestination  = (Join-path -Path $orderPath -ChildPath $ffConfig.internalImagingDest) -replace '"',""
-        delDestination  = (Join-Path -Path $orderPath -ChildPath $ffConfig.deleteDest) -replace '"',""
+        extDestination  = (Join-Path -Path $orderPath -ChildPath $order.externalImagingDest) -replace '"',""
+        intDestination  = (Join-path -Path $orderPath -ChildPath $order.internalImagingDest) -replace '"',""
+        delDestination  = (Join-Path -Path $orderPath -ChildPath $order.deleteDest) -replace '"',""
     }
 
     

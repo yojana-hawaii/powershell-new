@@ -1,8 +1,8 @@
-function Get-fnClinicalConfig {
+function Get-fnOrderConfig {
     [CmdletBinding()]
     param()
 
-    $global = Get-Content "$PWD\config\clinical.conf"
+    $global = Get-Content "$PWD\config\order.conf"
     $conf = @()
 
     $global | ForEach-Object {

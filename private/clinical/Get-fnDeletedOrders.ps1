@@ -2,14 +2,14 @@ function Get-fnDeletedOrders {
     [CmdletBinding()]
     param (
         [parameter()]
-        [System.Object]$objectHash    
+        [System.Object]$order    
     )
-    Write-Verbose "Separating deleted documents on $($objectHash.delete[0]) column on '$($objectHash.delete[1]) in Get-fnDeltedOrders.ps1'"
-    $deleteColumn = ($objectHash.delete[0]).ToString()
-    $deleteValue = ($objectHash.delete[1]).ToString()
-    $data = $objectHash.externaldata
-    $objectHash.deletedata = $data | Where-Object {$_.$deleteColumn -eq $deleteValue}
-    $objectHash.externaldata = $data | Where-Object {$_.$deleteColumn -ne $deleteValue}
+    Write-Information "Separate deleted documents on $($order.delete[0]) column on '$($order.delete[1]) in Get-fnDeltedOrders.ps1'"
+    $deleteColumn = ($order.delete[0]).ToString()
+    $deleteValue = ($order.delete[1]).ToString()
+    $data = $order.externaldata
+    $order.deletedata = $data | Where-Object {$_.$deleteColumn -eq $deleteValue}
+    $order.externaldata = $data | Where-Object {$_.$deleteColumn -ne $deleteValue}
         
-    return $objectHash
+    return $order
 }

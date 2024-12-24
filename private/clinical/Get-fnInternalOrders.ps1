@@ -2,17 +2,17 @@ function Get-fnInternalOrders {
     [CmdletBinding()]
     param (
         [parameter()]
-        [System.Object]$objectHash
+        [System.Object]$order
     )
-    Write-Verbose "Separate internal orders using internal order csv file in Get-fninternalOrders.ps1"
-    if( Test-Path -Path $objectHash.internalList){
-        $objectHash.internalList = (Read-fnCsvDefaultHeader -filename $objectHash.internalList).order
+    Write-Information "Separate internal orders using internal order csv file in Get-fninternalOrders.ps1"
+    if( Test-Path -Path $order.internalList){
+        $order.internalList = (Read-fnCsvDefaultHeader -filename $order.internalList).order
         
-        $objectHash.internaldata = $objectHash.externaldata | Where-Object { $_.order -in $objectHash.internalList}
-        $objectHash.externaldata = $objectHash.externaldata | Where-Object { $_.order -notin $objectHash.internalList}
+        $order.internaldata = $order.externaldata | Where-Object { $_.order -in $order.internalList}
+        $order.externaldata = $order.externaldata | Where-Object { $_.order -notin $order.internalList}
 
     } else {
-        Write-Warning "Internal order list for $($objectHash.type) does not exist."
+        Write-Warning "Internal order list for $($order.type) does not exist."
     }
-    return $objectHash
+    return $order
 }
