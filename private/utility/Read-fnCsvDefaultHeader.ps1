@@ -5,18 +5,16 @@ function Read-fnCsvDefaultHeader {
         [string]$filename    
     )
 
-    Write-Information "Reading csv file in Read-fnDefaultHeader.ps1"
+    Write-Information "$($MyInvocation.MyCommand.Name): Reading csv file $filename"
 
     if (Test-Path -Path $filename){
-        Write-Information "Test File path: File exists"
         try {
             $csvData = import-csv -Path $filename -Delimiter "," | Where-Object {$null -eq $_.PSOject.Properyties.Value}
-            Write-Information "Successfully imported csv file."
         } catch {
-            Write-Information "Import CSV file failed: $($_.Exception.Message)"
+            Write-Verbose "Import CSV file failed: $($_.Exception.Message)"
         }
     } else {
-        Write-Warning "Source file cannot be found: $($_.Exception.Message)"
+        Write-Verbose "Source file cannot be found: $($_.Exception.Message)"
     } 
 
    $csvData

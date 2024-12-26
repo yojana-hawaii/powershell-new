@@ -4,7 +4,7 @@ function Group-fnOrdersByGroupConfig {
         [parameter()]
         [System.Object]$order
     )
-    Write-Information "Group internal, external and delete data for $($order.type) in Group-fnOrderReportSummary"
+    Write-Information "$($MyInvocation.MyCommand.Name): Group internal, external and delete data for $($order.type)"
     $order.extSummary     = $order.externaldata | Group-Object -Property $order.summaryGroup | Select-Object Name, Count
     $order.intSummary     = $order.internaldata | Group-Object -Property $order.summaryGroup | Select-Object Name, Count
 

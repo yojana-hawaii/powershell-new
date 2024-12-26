@@ -4,7 +4,7 @@ function Get-fnInternalOrders {
         [parameter()]
         [System.Object]$order
     )
-    Write-Information "Separate internal orders using internal order csv file in Get-fninternalOrders.ps1"
+    Write-Information "$($MyInvocation.MyCommand.Name): Separate internal orders using internal order csv file in"
     if( Test-Path -Path $order.internalList){
         $order.internalList = (Read-fnCsvDefaultHeader -filename $order.internalList).order
         
@@ -12,7 +12,7 @@ function Get-fnInternalOrders {
         $order.externaldata = $order.externaldata | Where-Object { $_.order -notin $order.internalList}
 
     } else {
-        Write-Warning "Internal order list for $($order.type) does not exist."
+        Write-Warning "$($MyInvocation.MyCommand.Name): Internal order list for $($order.type) does not exist."
     }
     return $order
 }

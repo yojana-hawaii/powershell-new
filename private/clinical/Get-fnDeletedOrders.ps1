@@ -4,7 +4,7 @@ function Get-fnDeletedOrders {
         [parameter()]
         [System.Object]$order    
     )
-    Write-Information "Separate deleted documents on $($order.delete[0]) column on '$($order.delete[1]) in Get-fnDeltedOrders.ps1'"
+    Write-Information "$($MyInvocation.MyCommand.Name): Separate deleted documents on $($order.delete[0]) column on '$($order.delete[1])"
     $deleteColumn = ($order.delete[0]).ToString()
     $deleteValue = ($order.delete[1]).ToString()
     $data = $order.externaldata

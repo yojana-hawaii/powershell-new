@@ -1,10 +1,10 @@
 function Initialize-fnOrderConfigs {
     [CmdletBinding()]
     param()
-    Write-Information "Initializing the config files and create necessary PSCustomObjects in Initialize-fnOrderConfigs.ps1"
+    Write-Information "$($MyInvocation.MyCommand.Name): Initializing the config files and create necessary PSCustomObjects"
     $order           = Get-fnOrderConfig
     
-    Write-Information "Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "
+    Write-Information "$($MyInvocation.MyCommand.Name): Get order path from config file. Strip `" (double quote) > Pulling path from config file adds double quotes everywhere  "
     $orderPath          = $order.orderPath
     $sourcePath         = Join-Path -Path $orderPath -ChildPath $order.sourcePath
     $referencesPath     = Join-Path -Path $orderPath -ChildPath $order.references
@@ -12,7 +12,7 @@ function Initialize-fnOrderConfigs {
     $deletedBucket      = (($order.delete) -replace '"',"").Split(",")
     $group              = (($order.group) -replace '"',"").Split(",")
     
-    Write-Information "Create PSCustomObject for labs, referrals and imaging orders."
+    Write-Information "$($MyInvocation.MyCommand.Name): Create PSCustomObject for labs, referrals and imaging orders."
     $labHash = [PSCustomObject]@{
         type            = "Labs"
         source          = (Join-Path -Path $sourcePath -ChildPath $order.labFileName) -replace '"',""
@@ -20,6 +20,7 @@ function Initialize-fnOrderConfigs {
         delete          = $deletedBucket
         exclude         = (($order.exclude) -replace '"',"").Split(",")
         internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalLab) -replace '"',""
+        supportStaff    = (Join-Path -Path $referencesPath -ChildPath $order.labStaff) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -43,6 +44,7 @@ function Initialize-fnOrderConfigs {
         delete          = $deletedBucket
         exclude         = (($order.exclude) -replace '"',"").Split(",")
         internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalConsult) -replace '"',""
+        supportStaff    = (Join-Path -Path $referencesPath -ChildPath $order.consultStaff) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""
@@ -65,6 +67,7 @@ function Initialize-fnOrderConfigs {
         delete          = $deletedBucket
         exclude         = (($order.exclude) -replace '"',"").Split(",")
         internalList    = (Join-Path -Path $referencesPath -ChildPath $order.internalImaging) -replace '"',""
+        supportStaff    = (Join-Path -Path $referencesPath -ChildPath $order.imagingStaff) -replace '"',""
         
         summaryGroup    = $group[1]
         extSummary      = ""

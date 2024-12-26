@@ -6,7 +6,7 @@ function Update-fnInvalidDestination {
         [parameter()]
         [System.Object]$order
     )
-    Write-Information "Create new Destination files in Convert-fnOrderReportSummary "
+    Write-Information "$($MyInvocation.MyCommand.Name): Create new Destination files "
     $order = Remove-fnOrderNotReadyForFollowup -order $order
     $order = Get-fnDeletedOrders -order $order
     $order = Get-fnInternalOrders -order $order
@@ -16,7 +16,7 @@ function Update-fnInvalidDestination {
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.internaldata -destination $order.intDestination
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.externaldata -destination $order.extDestination
 
-    Update-fnEmailBodyInvalidDestination -email $email -order $order
+    Set-fnEmailBodyInvalidDestination -email $email -order $order
     
     return $order
 }

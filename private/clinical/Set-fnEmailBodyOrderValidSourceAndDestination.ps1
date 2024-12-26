@@ -1,4 +1,4 @@
-function Update-fnValidSourceAndDestination {
+function Set-fnEmailBodyOrderValidSourceAndDestination {
     [CmdletBinding()]
     param (
         [parameter()]
@@ -6,6 +6,6 @@ function Update-fnValidSourceAndDestination {
         [parameter()]
         [string]$type
     )
-    Write-Information "Do nothing for $type in Update-fnValidSourceAndDestination"
+    Write-Information "$($MyInvocation.MyCommand.Name): Do nothing for $type"
     $email.emailBody2 += "$type,"
 }

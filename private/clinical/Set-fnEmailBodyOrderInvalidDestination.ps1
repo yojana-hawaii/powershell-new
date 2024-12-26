@@ -1,4 +1,4 @@
-function Update-fnEmailBodyInvalidDestination {
+function Set-fnEmailBodyOrderInvalidDestination {
     [CmdletBinding()]
     param (
         [parameter()]

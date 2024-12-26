@@ -1,4 +1,4 @@
-function Update-fnInvalidSource {
+function Set-fnEmailBodyOrderInvalidSource {
     [CmdletBinding()]
     param (
         [parameter()]
@@ -9,7 +9,7 @@ function Update-fnInvalidSource {
         [string]$sourceFile
     )
     
-    Write-Information "Source file for $type not valid in Update-fnInvalidSource"
+    Write-Information "$($MyInvocation.MyCommand.Name): Source file for $type not valid."
     $fileToDownload = (Split-Path $sourceFile -Leaf) -replace ".csv", ""
     $email.emailBody3 += "$type (save as $fileToDownload), "
     $email.emailBody3a = "$(Split-Path $sourceFile -Parent)"

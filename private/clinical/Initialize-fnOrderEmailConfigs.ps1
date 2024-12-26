@@ -5,24 +5,34 @@ function Initialize-fnOrderEmailConfigs {
     )
     $emailConfig        = Get-fnEmailConfig
     
-    Write-Information "Initializing PSCustomObject for email.... in Initialize-fnOrderEmailConfigs"
+    Write-Information "$($MyInvocation.MyCommand.Name): : Initializing PSCustomObject for email"
     $email = [PSCustomObject]@{
         smtp            = ($emailConfig.smtp) -replace '"',""
         from            = ($emailConfig.myEmail) -replace '"',""
         to              = (($emailConfig.orderTo) -replace '"',"").Split(';')
         cc              = (($emailConfig.orderCC) -replace '"',"").Split(';')
-        subject         = ($emailConfig.orderSubject) -replace '"',""
+        supportcc       = (($emailConfig.supportStaffCC) -replace '"',"").Split(';')
         bodyashtml      = $true
-        body            = ""
         emailSig        = ($emailConfig.mySig) -replace '"',""
+ 
+        subject         = ""
+        body            = ""
 
-        emailBody1 = "Hello all, This is an automated email for incomplete labs, consults & imaging."
-        emailBody2 = ""       # do nothing
-        emailBody3 = ""       # download source files 
-        emailBody3a = ""      # source file unc
-        emailBody4 = @{}      # file location
-        emailBody5 = $null    # array of array into html table
-        emailBody6 = @{}      # applied filters for transparency
+        htmlStart       = Set-fnEmailHtmlStart
+        htmlEnd         = Set-fnEmailHtmlEnd
+
+        emailBody1      = $null
+        emailBody1a     = $null
+        emailBody2      = $null
+        emailBody2a     = $null
+        emailBody3      = $null
+        emailBody3a     = $null
+        emailBody4      = $null      
+        emailBody4a     = $null      
+        emailBody5      = $null    
+        emailBody5a     = $null    
+        emailBody6      = $null
+        emailBody6a     = $null
     }
 
     return $email
