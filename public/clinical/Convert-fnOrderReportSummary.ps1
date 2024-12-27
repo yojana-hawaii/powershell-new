@@ -31,6 +31,7 @@ function Convert-fnOrderReportSummary {
     $email = Initialize-fnOrderEmailConfigs 
 
     $sendEmail = $false
+    $staffEmail = $false
     $OrdersToDelete = $null
     $email.emailBody4 = @{}
     $email.emailBody5 = $null
@@ -52,6 +53,7 @@ function Convert-fnOrderReportSummary {
             else {
                 $order[$i] =  Update-fnInValidDestination -email $email -order $order[$i]
                 $sendEmail = $true
+                $staffEmail = $true
 
                 $OrdersToDelete += $order[$i].deletedata
             }
@@ -62,11 +64,15 @@ function Convert-fnOrderReportSummary {
         Set-fnEmailBodyOrder -email $email
         Set-fnEmailHtmlCombine -email $email
         Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
+
+        $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
     }
     
-    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
+    if($staffEmail){
+        Send-fnIncompleteLabToSupportStaff -orderPath $order[0].extDestination -supportStaffPath $order[0].supportStaff -email $email
+    }
     
-    Send-fnIncompleteLabToSupportStaff -orderPath $order[0].extDestination -supportStaffPath $order[0].supportStaff -email $email
+    
 
     $totalTime = Stop-Timer -Start $startTimer
     Write-Information "$($MyInvocation.MyCommand.Name): Order summary export and email complete. It took $totalTime"    

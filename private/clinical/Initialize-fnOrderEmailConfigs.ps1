@@ -12,6 +12,7 @@ function Initialize-fnOrderEmailConfigs {
         to              = (($emailConfig.orderTo) -replace '"',"").Split(';')
         cc              = (($emailConfig.orderCC) -replace '"',"").Split(';')
         supportcc       = (($emailConfig.supportStaffCC) -replace '"',"").Split(';')
+        supportFrom     = (($emailConfig.supportStaffFrom) -replace '"',"").Split(';')
         bodyashtml      = $true
         emailSig        = ($emailConfig.mySig) -replace '"',""
  

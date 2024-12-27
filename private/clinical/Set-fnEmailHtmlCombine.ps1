@@ -22,7 +22,8 @@ function Set-fnEmailHtmlCombine {
             $(if($null -ne $email.emailBody5) {$email.emailBody5})  
             $(if($null -ne $email.emailBody6) {$email.emailBody6})  
 
-            <p style=`"text-align:left`">Thank you,</br>$($email.emailSig) </p> 
+            $(if($null -ne $email.emailSig) {"<p style=text-align:left>Thank you,</br>$($email.emailSig) </p>"}) 
+      
             
             $($email.htmlEnd)
             "
