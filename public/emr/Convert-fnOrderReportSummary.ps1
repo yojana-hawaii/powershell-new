@@ -68,7 +68,7 @@ function Convert-fnOrderReportSummary {
         $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
     }
     
-    if($staffEmail){
+    if(-not $staffEmail){
         Send-fnIncompleteLabToSupportStaff -orderPath $order[0].extDestination -supportStaffPath $order[0].supportStaff -email $email
     }
     
