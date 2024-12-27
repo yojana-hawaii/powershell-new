@@ -32,6 +32,9 @@ function Convert-fnOrderReportSummary {
 
     $sendEmail = $false
     $OrdersToDelete = $null
+    $email.emailBody4 = @{}
+    $email.emailBody5 = $null
+    $email.emailBody6 = @{}
 
 
     Write-Verbose "$($MyInvocation.MyCommand.Name): Looping through $($order.type)"
@@ -54,15 +57,14 @@ function Convert-fnOrderReportSummary {
             }
         }    
     }
-    
-    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
-
-    
+        
     if($sendEmail) {
         Set-fnEmailBodyOrder -email $email
         Set-fnEmailHtmlCombine -email $email
         Send-MailMessage -From $email.from -To $email.to -Cc $email.cc  -Subject $email.subject -Body $email.body -SmtpServer $email.smtp -BodyAsHtml
     }
+    
+    $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
     
     Send-fnIncompleteLabToSupportStaff -orderPath $order[0].extDestination -supportStaffPath $order[0].supportStaff -email $email
 
