@@ -16,7 +16,7 @@ function Update-fnInvalidDestination {
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.internaldata -destination $order.intDestination
     Export-fnGroupedObjectToSeparateCsv -groupObject $order.externaldata -destination $order.extDestination
 
-    Set-fnEmailBodyInvalidDestination -email $email -order $order
+    Set-fnEmailBodyOrderInvalidDestination -email $email -order $order
     
     return $order
 }
