@@ -9,6 +9,7 @@ function Initialize-fnOrderEmailConfigs {
     $email = [PSCustomObject]@{
         smtp            = ($emailConfig.smtp) -replace '"',""
         from            = ($emailConfig.myEmail) -replace '"',""
+        me              = ($emailConfig.myEmail) -replace '"',""
         to              = (($emailConfig.orderTo) -replace '"',"").Split(';')
         cc              = (($emailConfig.orderCC) -replace '"',"").Split(';')
         supportcc       = (($emailConfig.supportStaffCC) -replace '"',"").Split(';')

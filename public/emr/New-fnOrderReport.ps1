@@ -1,15 +1,15 @@
 set-location "\\fileserver\it\apps\powershell"
 
-function Convert-fnOrderReportSummary {
+function New-fnOrderReport {
     [CmdletBinding()]
     param()
 
     #region - Import necessary configs and private functions #>
 
     Write-Verbose "$($MyInvocation.MyCommand.Name): Import necessary private functions & config helpers in "
-    $configHelper       = @(Get-ChildItem -Path "$PWD\config-helper\*.ps1"              -ErrorAction SilentlyContinue -Recurse)
-    $private            = @(Get-ChildItem -Path "$PWD\private\clinical\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
-    $utility            = @(Get-ChildItem -Path "$PWD\private\utility\*.ps1"  -ErrorAction SilentlyContinue -Recurse)
+    $configHelper       = @(Get-ChildItem -Path "$PWD\config-helper\*.ps1"      -ErrorAction SilentlyContinue -Recurse)
+    $private            = @(Get-ChildItem -Path "$PWD\private\order\*.ps1"      -ErrorAction SilentlyContinue -Recurse)
+    $utility            = @(Get-ChildItem -Path "$PWD\private\utility\*.ps1"    -ErrorAction SilentlyContinue -Recurse)
 
     foreach ($import in @($configHelper + $private + $utility)){
         try{
@@ -68,7 +68,7 @@ function Convert-fnOrderReportSummary {
         $OrdersToDelete | Where-Object {$null -ne $_ }| Export-csv -Path "$($order[0].delDestination)\delete.csv" -NoTypeInformation
     }
     
-    if(-not $staffEmail){
+    if($staffEmail){
         Send-fnIncompleteLabToSupportStaff -orderPath $order[0].extDestination -supportStaffPath $order[0].supportStaff -email $email
     }
     
@@ -84,7 +84,7 @@ $Global:today = $null
 $today = Get-Date
 $mmddyyyy = Get-Date -Format "MM-dd-yyyy"
 
-Start-Transcript -Path "$pwd\log\Convert-fnOrderReportSummary_$mmddyyyy.txt" -Append
-Convert-fnOrderReportSummary  -Verbose -InformationAction Continue
+Start-Transcript -Path "$pwd\log\$($MyInvocation.MyCommand.Name)_$mmddyyyy.txt" -Append
+New-fnOrderReport  -Verbose -InformationAction Continue
 Stop-Transcript
 

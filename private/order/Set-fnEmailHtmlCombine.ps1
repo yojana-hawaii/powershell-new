@@ -7,9 +7,10 @@ function Set-fnEmailHtmlCombine {
 
     Write-Information "$($MyInvocation.MyCommand.Name): Set email body to html"
 
-    # send test email to myself
-    #$email.To = $email.From
-    #$email.CC = $email.From
+    # send test email to me
+    # $email.To = $email.me
+    # $email.CC = $email.me
+    # $email.From = $email.me
     
     $email.body = "
             $($email.htmlStart)
