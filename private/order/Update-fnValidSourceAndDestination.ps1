@@ -1,4 +1,4 @@
-function Set-fnEmailBodyOrderValidSourceAndDestination {
+function Update-fnValidSourceAndDestination {
     [CmdletBinding()]
     param (
         [parameter()]

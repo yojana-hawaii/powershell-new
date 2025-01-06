@@ -1,4 +1,4 @@
-function Set-fnEmailBodyOrderInvalidSource {
+function Update-fnInvalidSource {
     [CmdletBinding()]
     param (
         [parameter()]
