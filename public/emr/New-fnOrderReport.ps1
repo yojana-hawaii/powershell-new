@@ -43,12 +43,12 @@ function New-fnOrderReport {
         Write-Information "$($MyInvocation.MyCommand.Name): Current loop $($order[$i].type )"
 
         if( -not (Test-fnSourceFile -sourceFile $order[$i].source -sourceFileValidDays 7) ){
-            Set-fnEmailBodyOrderInvalidSource -email $email -type $order[$i].type -sourceFile $order[$i].source 
+            Update-fnInvalidSource -email $email -type $order[$i].type -sourceFile $order[$i].source 
             $sendEmail = $true
         } else {
 
             if (Test-fnDestinationFile -sourceFile $order[$i].source -destinationFile $order[$i].extDestination ){
-                Set-fnEmailBodyOrderValidSourceAndDestination -email $email -type $order[$i].type
+                Update-fnValidSourceAndDestination -email $email -type $order[$i].type
             }
             else {
                 $order[$i] =  Update-fnInValidDestination -email $email -order $order[$i]
