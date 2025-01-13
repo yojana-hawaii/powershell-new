@@ -11,7 +11,7 @@ function Set-fnEmailBodyOrder {
     $email.Subject = "Incomplete labs, consults & imaging."
 
     #Greetings
-    $email.emailBody1 = "Hello all, This is an automated email for incomplete labs, consults & imaging."
+    $email.emailBody1 = "Hello all, This is an automated email for incomplete labs, consults & imaging. Designated support staff get separate automated email with list of incomplete labs for providers they work with."
 
     # Do Nothing
     $email.emailbody2 = " $(if ($email.emailbody2.length -ge 1){
