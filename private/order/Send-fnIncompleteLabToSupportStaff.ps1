@@ -34,9 +34,15 @@ function Send-fnIncompleteLabToSupportStaff {
                     Provider = "$orderProviderFirst $orderProviderLast"
                     File = "$orderPath\$file"
                     Count = $incompleteOrderCount
-                }
-
-                
+                }  
+            } else {
+                $orderAssignment += [PSCustomObject]@{
+                    Staff = "Unknown"
+                    Email = $email.supportFrom
+                    Provider = "$orderProviderFirst $orderProviderLast"
+                    File = "$orderPath\$file"
+                    Count = $incompleteOrderCount
+                }  
             }
         }
     }

@@ -20,13 +20,13 @@ function Set-fnEmailBodyOrder {
 
     # Download source file & source file unc in 3a
     $email.emailbody3 = "$(if ($email.emailBody3.length -ge 1){
-        "<p><strong>Source File No Good: </strong>From Athena Report Inbox, please download new report for $($email.emailBody3.substring(0, $email.emailBody3.length-2)). 
+        "<p><strong>Data older than 7 days: </strong>From Athena Report Inbox, please download new report for $($email.emailBody3.substring(0, $email.emailBody3.length-2)). 
         Save the file to $($email.emailBody3a). Replace existing file.</p>"
     })"
 
     
 
-    if ($null -ne $email.emailBody4){
+    if ($null -ne $email.emailBody4 -and $email.emailBody3.length -le 0){
         
         # file location
         $email.emailBody4 = "<p><strong>File Location</strong>
@@ -66,5 +66,9 @@ function Set-fnEmailBodyOrder {
                     </li>
                 <ul>
             </p>"
+    } else {
+        $email.emailbody4 = ""
+        $email.emailbody5 = ""
+        $email.emailbody6 = ""
     }
 }
