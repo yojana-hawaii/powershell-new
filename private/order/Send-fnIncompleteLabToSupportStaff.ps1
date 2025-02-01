@@ -17,14 +17,18 @@ function Send-fnIncompleteLabToSupportStaff {
 
     foreach($file in $files){
         $orderDetail = ($file.name -split "_")
-        $orderProviderFirst = $orderDetail[-3]
+
+        $orderProviderFirst = $orderDetail[1]
         $orderProviderLast = $orderDetail[0]
         $incompleteOrderCount = $orderDetail[-2]
+        $matchFound = $false
+
+       
 
         foreach($staff in $supportStaff){
             # some people have space in first or last name
-            $assignProviderFirst = ($staff.provider_first -split " ")[0]
-            $assignPRoviderLast = ($staff.provider_last -split " ")[0]
+            $assignProviderFirst = ($staff.provider_first).Replace(" ","-")
+            $assignPRoviderLast =  ($staff.provider_last).Replace(" ","-")
 
             if($orderProviderFirst -eq $assignProviderFirst -and $orderProviderLast -eq $assignPRoviderLast ){
                 #some support staff have more than one provider
@@ -35,15 +39,18 @@ function Send-fnIncompleteLabToSupportStaff {
                     File = "$orderPath\$file"
                     Count = $incompleteOrderCount
                 }  
-            } else {
-                $orderAssignment += [PSCustomObject]@{
-                    Staff = "Unknown"
-                    Email = $email.supportFrom
-                    Provider = "$orderProviderFirst $orderProviderLast"
-                    File = "$orderPath\$file"
-                    Count = $incompleteOrderCount
-                }  
+                $matchFound = $true
+                break
             }
+        }
+        if(-not $matchFound){
+            $orderAssignment += [PSCustomObject]@{
+                Staff = "Unknown"
+                Email = $email.supportFrom
+                Provider = "$orderProviderFirst $orderProviderLast"
+                File = "$orderPath\$file"
+                Count = $incompleteOrderCount
+            } 
         }
     }
     #new loop because one staff can have more than one assigned provider. 
